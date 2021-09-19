@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>dotnet-CloudTheWolf.DSharpPlus.Scaffolding.Worker-0A60E053-6D97-4B88-9050-870BA0C51813</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CloudTheWolf.DSharpPlus.Scaffolding.Data\CloudTheWolf.DSharpPlus.Scaffolding.Data.csproj" />
+    <ProjectReference Include="..\CloudTheWolf.DSharpPlus.Scaffolding.Shared\CloudTheWolf.DSharpPlus.Scaffolding.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json" Pack="False">
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Plugins\README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

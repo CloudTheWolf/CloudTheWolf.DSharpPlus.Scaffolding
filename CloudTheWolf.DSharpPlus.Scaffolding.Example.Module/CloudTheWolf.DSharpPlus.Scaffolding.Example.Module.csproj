@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="1.0.0-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CloudTheWolf.DSharpPlus.Scaffolding.Shared\CloudTheWolf.DSharpPlus.Scaffolding.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>C:\Users\CloudTheWolf\source\repos\CloudTheWolf.DSharpPlus.Scaffolding\CloudTheWolf.DSharpPlus.Scaffolding.Worker\bin\Debug\net5.0\Plugins</OutputPath>
+  </PropertyGroup>
+  
+</Project>

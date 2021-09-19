@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <DebugType>embedded</DebugType>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>CloudTheWolf</Authors>
+    <Product>$(SolutionName)</Product>
+    <Copyright>© 2021 CloudTheWolf Ltd</Copyright>
+    <Description>Shared Interfaces for CloudTheWolf.DSharpPlus.Scaffolding</Description>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <AssemblyVersion>1.0.0.3</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <Version>$(AssemblyVersion)-beta</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Logging" Version="1.0.0.1" />
+    <PackageReference Include="DSharpPlus" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.Lavalink" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.Rest" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.VoiceNext" Version="4.2.0-nightly-00995" />
+    <PackageReference Include="DSharpPlus.VoiceNext.Natives" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>
