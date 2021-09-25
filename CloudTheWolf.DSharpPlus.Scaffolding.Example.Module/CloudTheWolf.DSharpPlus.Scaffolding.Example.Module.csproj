@@ -11,8 +11,4 @@
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="1.0.0.4-beta" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>C:\Users\CloudTheWolf\source\repos\CloudTheWolf.DSharpPlus.Scaffolding\CloudTheWolf.DSharpPlus.Scaffolding.Worker\bin\Debug\net5.0\Plugins</OutputPath>
-  </PropertyGroup>
-  
 </Project>
