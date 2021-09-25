@@ -19,19 +19,5 @@
     "user": "mySqlUser",
     "pass": "MySqlPass",
     "name": "MyDatabaseName"
-  },
-  "twitch": {
-    "autostart": true,
-    "ClientId": "MyTwitchClient",
-    "AccessToken": "MyTwitchToken",
-    "AutoAssign": true,
-    "AutoPurge": true,
-    "LogChannel": "ChannelIdForLogging"
-  },
-  "Level": {
-    "MsgExp": 0.012,
-    "VoiceExp": 0.012,
-    "PurgeExpOnBan": false,
-    "RevokeOnMsgDelete": true
   }
 }

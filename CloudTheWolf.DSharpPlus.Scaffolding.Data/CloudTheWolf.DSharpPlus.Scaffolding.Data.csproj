@@ -9,9 +9,12 @@
     <Copyright>© 2021 CloudTheWolf Ltd</Copyright>
     <Description>Database System for CloudTheWolf.DSharpPlus.Scaffolding</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
-    <Version>$(AssemblyVersion)-beta</Version>
+    <Version>$(AssemblyVersion)</Version>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,5 +22,16 @@
     <PackageReference Include="MySqlConnector" Version="1.3.12" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>C:\Users\CloudTheWolf\source\repos\CloudTheWolf.DSharpPlus.Scaffolding\CloudTheWolf.DSharpPlus.Scaffolding.Worker\bin\Debug\net5.0\Plugins</OutputPath>
+  </PropertyGroup>
 
 </Project>

@@ -7,13 +7,12 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Data
 {
     public class MySqlDataAccess : DataAccess
     {
-        private string _sqlConnectionString;
         private MySqlConnection _sqlConnection;
 
         public override string LoadConnectionString(string connStr)
         {
-            _sqlConnectionString = connStr;
-            return _sqlConnectionString;
+            _sqlConnection = new MySqlConnection(connStr);
+            return _sqlConnection.ConnectionString;
         }
 
         public override string Request(string sqlCommandString)
@@ -37,7 +36,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Data
 
         private void DbConnect()
         {
-            _sqlConnection.ConnectionString = _sqlConnectionString;
             try
             {
                 _sqlConnection.Open();
