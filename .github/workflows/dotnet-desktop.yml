@@ -16,7 +16,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore --configfile .NuGet/NuGet.Config
+      run: dotnet restore --configfile ./.NuGet/NuGet.Config
     - name: Build
       run: dotnet publish -r linux-x64 -c Release
     - name: Archive Release
