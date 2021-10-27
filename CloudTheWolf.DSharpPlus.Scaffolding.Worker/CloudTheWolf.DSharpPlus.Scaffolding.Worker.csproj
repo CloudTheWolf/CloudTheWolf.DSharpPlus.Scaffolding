@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>dotnet-CloudTheWolf.DSharpPlus.Scaffolding.Worker-0A60E053-6D97-4B88-9050-870BA0C51813</UserSecretsId>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +20,8 @@
   <ItemGroup>
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="1.0.0.1" />
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="1.0.0.4-beta" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="7.24.1" />
+    <PackageReference Include="Magick.NET.Core" Version="7.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />

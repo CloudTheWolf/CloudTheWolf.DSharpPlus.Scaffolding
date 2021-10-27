@@ -22,8 +22,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 {
                     var files = Directory.GetFiles(Constants.PluginsFolder);
                     foreach (var file in files)
+                    {
+                        Console.WriteLine($"{file}");
                         if (file.EndsWith(".dll"))
                             Assembly.LoadFrom(Path.GetFullPath(file));
+                    }
                 }
 
                 var interfaceType = typeof(IPlugin);
