@@ -16,9 +16,9 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore --configfile NuGet.Config
+      run: dotnet restore --configfile ./.NuGet/NuGet.Config
     - name: Build
-      run: dotnet publish -r linux-x64 -c Release -o plugins
+      run: dotnet publish -r linux-x64 -c Release
     - name: Archive Release
       uses: thedoctor0/zip-release@master
       with:
@@ -32,7 +32,7 @@ jobs:
     - name: Clean
       run: dotnet clean --configuration Release
     - name: Build-Win
-      run: dotnet publish -r linux-x64 -c Release -o plugins
+      run: dotnet publish -r linux-x64 -c Release
     - name: Archive Release
       uses: thedoctor0/zip-release@master
       with:
