@@ -5,13 +5,7 @@ VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Worker", "CloudTheWolf.DSharpPlus.Scaffolding.Worker\CloudTheWolf.DSharpPlus.Scaffolding.Worker.csproj", "{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Shared", "CloudTheWolf.DSharpPlus.Scaffolding.Shared\CloudTheWolf.DSharpPlus.Scaffolding.Shared.csproj", "{FA98CAD9-B490-4C4E-AAA8-B755A6DDD3F6}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Logging", "CloudTheWolf.DSharpPlus.Scaffolding.Logging\CloudTheWolf.DSharpPlus.Scaffolding.Logging.csproj", "{59BA0DA4-2BF4-4C54-8075-A8EFCC4594EF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Data", "CloudTheWolf.DSharpPlus.Scaffolding.Data\CloudTheWolf.DSharpPlus.Scaffolding.Data.csproj", "{ABCD16B9-A4F9-4A68-904A-C8052E707BAA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module", "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.csproj", "{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module", "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.csproj", "{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,18 +17,6 @@ Global
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA98CAD9-B490-4C4E-AAA8-B755A6DDD3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA98CAD9-B490-4C4E-AAA8-B755A6DDD3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA98CAD9-B490-4C4E-AAA8-B755A6DDD3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA98CAD9-B490-4C4E-AAA8-B755A6DDD3F6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{59BA0DA4-2BF4-4C54-8075-A8EFCC4594EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{59BA0DA4-2BF4-4C54-8075-A8EFCC4594EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{59BA0DA4-2BF4-4C54-8075-A8EFCC4594EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{59BA0DA4-2BF4-4C54-8075-A8EFCC4594EF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ABCD16B9-A4F9-4A68-904A-C8052E707BAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ABCD16B9-A4F9-4A68-904A-C8052E707BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ABCD16B9-A4F9-4A68-904A-C8052E707BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ABCD16B9-A4F9-4A68-904A-C8052E707BAA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
