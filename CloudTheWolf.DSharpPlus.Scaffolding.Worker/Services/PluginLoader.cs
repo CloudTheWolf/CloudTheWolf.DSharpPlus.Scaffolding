@@ -23,8 +23,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                     var files = Directory.GetFiles(Constants.PluginsFolder);
                     foreach (var file in files)
                     {
-                        Console.WriteLine($"{file}");
-                        if (file.EndsWith(".dll"))
+                        if (file.EndsWith("dll"))
                             Assembly.LoadFrom(Path.GetFullPath(file));
                     }
                 }
@@ -57,7 +56,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 //Create a new instance of all found types
                 foreach (var type in types)
                 {
-                    Console.WriteLine(type.FullName);
                     Plugins.Add((IPlugin)Activator.CreateInstance(type));
                 }
             }
