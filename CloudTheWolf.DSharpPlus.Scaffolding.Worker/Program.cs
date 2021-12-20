@@ -31,7 +31,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         {
 
 
-            var config = (Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") == "Development") ? "appsettings.Development.json" : "appsettings.json";
+            var config = "appsettings.json";
 
 
             serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
