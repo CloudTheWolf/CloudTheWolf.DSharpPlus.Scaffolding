@@ -17,7 +17,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Classes
             var MySql = true;
             sda = MySql ? new MySqlDataAccess() : new SqlSvrDataAccess();
 
-            sda.LoadConnectionString($"Server={Options.MySqlHost};Port={Options.MySqlPort};Uid={Options.MySqlUsername};Pwd={Options.MySqlPassword};Database={Options.MySqlDatabase};");
+            sda.LoadConnectionString($"Server={Options.MySqlHost};Port={Options.MySqlPort};Uid={Options.MySqlUsername};Pwd={Options.MySqlPassword};Database={Options.MySqlDatabase};",Example.Logger);
 
         }
 
@@ -25,7 +25,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Classes
         internal JArray GetConfig()
         {
             
-            var json = sda.Request("SELECT * FROM config;");
+            var json = sda.Request("SELECT * FROM config;", Example.Logger);
             return JArray.Parse(json);
         }
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-CloudTheWolf.DSharpPlus.Scaffolding.Worker-0A60E053-6D97-4B88-9050-870BA0C51813</UserSecretsId>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -12,10 +12,6 @@
     <None Remove="appsettings.json.example" />
   </ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>G:\aaaProjects18\</OutputPath>
-	</PropertyGroup>
-
   <ItemGroup>
     <Content Include="appsettings.json.example">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -23,12 +19,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="1.0.1.9" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="1.0.1.11" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="5.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="5.0.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.0.0.1" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
