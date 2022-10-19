@@ -366,3 +366,4 @@ FodyWeavers.xsd
 
 CloudTheWolf.DSharpPlus.Scaffolding.Worker/appsettings.Development.json
 /build_linux.bat
+/CloudTheWolf.DSharpPlus.Scaffolding.Worker/Properties/launchSettings.json
