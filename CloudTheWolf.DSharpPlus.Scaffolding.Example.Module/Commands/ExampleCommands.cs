@@ -4,23 +4,16 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.SlashCommands;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands
 {
     class ExampleCommands : BaseCommandModule
     {
-
-        private Database _dba = new Database();
-
-        [Command("configs")]
+        [Command("example")]
         public async Task GetConfigSettings(CommandContext ctx)
         {
-            var exampleArray = _dba.GetConfig();
-            foreach(JObject jObject in exampleArray )
-            {
-                await ctx.Channel.SendMessageAsync($"Setting {jObject["name"]} [bValue = {jObject["bValue"]}, iValue = {jObject["iValue"]}]");            
-            };
+            await ctx.RespondAsync("Example");
         }
-
     }
 }

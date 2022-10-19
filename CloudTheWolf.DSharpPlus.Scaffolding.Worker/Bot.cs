@@ -11,8 +11,11 @@ using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DSharpPlus.SlashCommands;
+using Emzi0767.Utilities;
 using Microsoft.Extensions.Configuration;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
@@ -24,7 +27,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         public DiscordRestClient Rest { get; set; }
         public CommandsNextExtension Commands { get; set; }
         public InteractivityExtension Interactivity { get; set; }
-        public LavalinkConfiguration LvalinkConfig { get; set; }
+        public LavalinkConfiguration LavalinkConfig { get; set; }
+        public SlashCommandsExtension SlashCommandsExt { get; set; }
+
 
         private static DiscordConfiguration _config;
         private static dynamic _myConfig;
@@ -41,10 +46,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             CreateDiscordClient();
             CreateClientCommandConfiguration();
             InitPlugins();
-            ListAllCommands();
             await Client.ConnectAsync();
-
-
+            ListAllCommands();
             await Task.Delay(-1, stoppingToken);
         }
 
@@ -89,7 +92,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Client = new DiscordClient(_config);
             Interactivity = Client.GetInteractivity();
             Client.Ready += OnClientReady;
-
+            SlashCommandsExt = Client.UseSlashCommands();
             Client.UseInteractivity(new InteractivityConfiguration
             {
                 Timeout = TimeSpan.FromMinutes(1)
@@ -116,13 +119,17 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             foreach (var registeredCommand in Client.GetCommandsNext().RegisteredCommands)
             {
                 Console.WriteLine($"Command: {registeredCommand.Value.Name} \nDesc: {registeredCommand.Value.Description} \nRoles:");
-                foreach (var keyValuePair in registeredCommand.Value.Overloads.ToImmutableArray())
+                foreach (var args in registeredCommand.Value.Overloads.ToImmutableArray().SelectMany(keyValuePair => keyValuePair.Arguments))
                 {
-                    foreach (var args in keyValuePair.Arguments)
-                    {
-                        Console.WriteLine($"> Name: {args.Name}\n> Desc: {args.Description}");
-                    }
+                    Console.WriteLine($"> Name: {args.Name}\n> Desc: {args.Description}");
                 }
+                Console.WriteLine("============");
+            }
+            Console.WriteLine("Getting Slash Commands");
+            Console.WriteLine("============");
+            foreach (var registeredCommand in SlashCommandsExt.RegisteredCommands)
+            {
+                Console.WriteLine($"Command: {registeredCommand.Key} \nDesc: {registeredCommand.Value}");
                 Console.WriteLine("============");
             }
         }
@@ -130,6 +137,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         private static Task OnClientReady(DiscordClient sender, ReadyEventArgs readyEventArgs)
         {
             Logger.LogInformation($"Bot Ready!");
+            
             return Task.CompletedTask;
         }
     }

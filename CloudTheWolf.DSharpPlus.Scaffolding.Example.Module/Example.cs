@@ -5,6 +5,7 @@ using DSharpPlus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.ApplicationCommands;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
@@ -29,9 +30,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         private void RegisterCommands(IBot bot)
         {
-
-            bot.Commands.RegisterCommands<Commands.ExampleCommands>();
-            Logger.LogInformation($"{Name}: Registared {nameof(ExampleCommands)}!");
+            bot.SlashCommandsExt.RegisterCommands<ExampleSlashCommands>();
+            bot.Commands.RegisterCommands<ExampleCommands>();
+            Logger.LogInformation($"{Name}: Registered {nameof(ExampleCommands)}!");
 
         }
 
