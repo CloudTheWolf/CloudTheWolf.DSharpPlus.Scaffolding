@@ -6,6 +6,7 @@
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "ShardMode": false,
   "Discord": {
     "token": "{{DISCORD_TOKEN}}",
     "prefix": "a!",
