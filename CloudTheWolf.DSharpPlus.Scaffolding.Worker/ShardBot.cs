@@ -10,24 +10,26 @@ using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.SlashCommands;
+using Emzi0767.Utilities;
 using Microsoft.Extensions.Configuration;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 {
-    internal class Bot : IBot
+    internal class ShardBot : IShardBot
     {
-        public DiscordClient Client { get; set; }
-        public VoiceNextExtension Voice { get; set; }
+        public DiscordShardedClient Client { get; set; }
+        public IReadOnlyDictionary<int, VoiceNextExtension> Voice { get; set; }
         public DiscordRestClient Rest { get; set; }
-        public CommandsNextExtension Commands { get; set; }
-        public InteractivityExtension Interactivity { get; set; }
-        public LavalinkConfiguration LavalinkConfig { get; set; }
-        public SlashCommandsExtension SlashCommandsExt { get; set; }
+        public IReadOnlyDictionary<int,CommandsNextExtension> Commands { get; set; }
+        public IReadOnlyDictionary<int, InteractivityExtension> Interactivity { get; set; }
+        public IReadOnlyDictionary<int, LavalinkConfiguration> LavalinkConfig { get; set; }
+        public IReadOnlyDictionary<int, SlashCommandsExtension> SlashCommandsExt { get; set; }
 
 
         private static DiscordConfiguration _config;
@@ -45,16 +47,15 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             CreateDiscordClient();
             CreateClientCommandConfiguration();
             InitPlugins();
-            await Client.ConnectAsync();
-            ListAllCommands();
+            await Client.StartAsync();
             await Task.Delay(-1, stoppingToken);
         }
 
         private void InitPlugins()
         {
-            PluginLoader.LoadPlugins();
+            PluginLoader.LoadShardPlugins();
 
-            foreach (var plugin in PluginLoader.Plugins)
+            foreach (var plugin in PluginLoader.ShardPlugins)
             {
                 plugin.InitPlugin(this, Logger, _config, Program.configuration);
             }
@@ -82,20 +83,18 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                 DmHelp = Options.DmHelp,
                 EnableDefaultHelp = Options.DefaultHelp
             };
+            
 
-            Commands = Client.UseCommandsNext(commandsConfig);
+            Commands = Client.UseCommandsNextAsync(commandsConfig).Result;
         }
 
         private void CreateDiscordClient()
         {
-            Client = new DiscordClient(_config);
-            Interactivity = Client.GetInteractivity();
+            Client = new DiscordShardedClient(_config);
+            Interactivity = Client.GetInteractivityAsync().Result;
             Client.Ready += OnClientReady;
-            SlashCommandsExt = Client.UseSlashCommands();
-            Client.UseInteractivity(new InteractivityConfiguration
-            {
-                Timeout = TimeSpan.FromMinutes(1)
-            });
+            SlashCommandsExt = Client.UseSlashCommandsAsync().Result;
+            
         }
 
         private static void SetDiscordConfig()
@@ -109,28 +108,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                 LoggerFactory = Logging.Logger.LoggerFactory,
 
             };
-        }
-
-        private void ListAllCommands()
-        {
-            Console.WriteLine("Getting Commands");
-            Console.WriteLine("============");
-            foreach (var registeredCommand in Client.GetCommandsNext().RegisteredCommands)
-            {
-                Console.WriteLine($"Command: {registeredCommand.Value.Name} \nDesc: {registeredCommand.Value.Description} \nRoles:");
-                foreach (var args in registeredCommand.Value.Overloads.ToImmutableArray().SelectMany(keyValuePair => keyValuePair.Arguments))
-                {
-                    Console.WriteLine($"> Name: {args.Name}\n> Desc: {args.Description}");
-                }
-                Console.WriteLine("============");
-            }
-            Console.WriteLine("Getting Slash Commands");
-            Console.WriteLine("============");
-            foreach (var registeredCommand in SlashCommandsExt.RegisteredCommands)
-            {
-                Console.WriteLine($"Command: {registeredCommand.Key} \nDesc: {registeredCommand.Value}");
-                Console.WriteLine("============");
-            }
         }
 
         private static Task OnClientReady(DiscordClient sender, ReadyEventArgs readyEventArgs)

@@ -6,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.ApplicationCommands;
+using DSharpPlus.CommandsNext;
+using DSharpPlus.SlashCommands;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
-    public class Example : IPlugin
+    public class Example : IShardPlugin
     {
         public string Name => "Example Plugin";
 
@@ -19,7 +21,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         public static ILogger<Logger> Logger;
 
-        public void InitPlugin(IBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
+        public void InitPlugin(IShardBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
         {
             Logger = logger;
             LoadConfig(applicationConfig);
@@ -28,12 +30,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         }
 
-        private void RegisterCommands(IBot bot)
+        private void RegisterCommands(IShardBot bot)
         {
             bot.SlashCommandsExt.RegisterCommands<ExampleSlashCommands>();
             bot.Commands.RegisterCommands<ExampleCommands>();
             Logger.LogInformation($"{Name}: Registered {nameof(ExampleCommands)}!");
-
         }
 
         private void LoadConfig(IConfigurationRoot applicationConfig)

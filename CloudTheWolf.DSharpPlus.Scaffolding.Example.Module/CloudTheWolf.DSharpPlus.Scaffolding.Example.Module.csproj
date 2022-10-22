@@ -7,8 +7,13 @@
     <BaseOutputPath>bin\</BaseOutputPath>
   </PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>C:\Users\MichaelHoward\Documents\GitHub\CloudTheWolf.DSharpPlus.Scaffolding\CloudTheWolf.DSharpPlus.Scaffolding.Worker\bin\Debug\Plugins</OutputPath>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.0.0.1" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.1.0.6" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.1.0.16" />
   </ItemGroup>
 </Project>

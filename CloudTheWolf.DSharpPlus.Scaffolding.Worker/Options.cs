@@ -10,6 +10,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
     public class Options
     {
         /// <summary>
+        /// Set if the bot uses Sharding
+        /// </summary>
+        public static bool ShardMode { get; set; }
+
+        /// <summary>
         /// Prefix for commands
         /// </summary>
         public static IEnumerable<string> Prefix { get; set; }
