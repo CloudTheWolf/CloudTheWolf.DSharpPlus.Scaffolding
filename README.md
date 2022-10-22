@@ -6,7 +6,7 @@ A Simple, Unofficial, Scaffolding for [DSharpPlus](https://github.com/DSharpPlus
 This project was created as a base for getting started, and has no affiliation with DShapPlus.
 
 
-This Repo includes an example Worker, capable of running as either an console application or servive or Windows and Linux environments, and an example plugin
+This Repo includes an example Worker, capable of running as either an console application or servive on both Windows and Linux environments, and an example plugin
 
 This uses the fillowing libraries:
 
