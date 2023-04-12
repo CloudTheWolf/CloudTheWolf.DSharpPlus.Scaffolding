@@ -9,14 +9,10 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Lavalink;
 using DSharpPlus.VoiceNext;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.SlashCommands;
-using Emzi0767.Utilities;
 using Microsoft.Extensions.Configuration;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
