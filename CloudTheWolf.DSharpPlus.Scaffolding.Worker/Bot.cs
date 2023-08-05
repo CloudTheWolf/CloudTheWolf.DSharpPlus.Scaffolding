@@ -56,6 +56,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
             foreach (var plugin in PluginLoader.Plugins)
             {
+                Console.WriteLine(plugin.Name);
                 plugin.InitPlugin(this, Logger, _config, Program.configuration);
             }
         }

@@ -38,5 +38,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         /// Use DSharpPlus build in Help command
         /// </summary>
         public static bool DefaultHelp { get; set; }
+
+        /// <summary>
+        /// Cure Zombie and Other abnormal status. (Set to false to handle this is a plugin)
+        /// </summary>
+        public static bool ZombieCure { get; set; }
     }
 }

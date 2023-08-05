@@ -65,11 +65,12 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Options.EnableMentionPrefix = Program.configuration.GetValue<bool>("Discord:enableMentionPrefix");
             Options.DmHelp = Program.configuration.GetValue<bool>("Discord:dmHelp");
             Options.DefaultHelp = Program.configuration.GetValue<bool>("Discord:enableDefaultHelp");
+            Options.ZombieCure = Program.configuration.GetValue<bool>("UseZombieCure");
 
         }
 
 
-        private void CreateClientCommandConfiguration()
+        private async Task CreateClientCommandConfiguration()
         {
             var commandsConfig = new CommandsNextConfiguration
             {
@@ -81,16 +82,20 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             };
             
 
-            Commands = Client.UseCommandsNextAsync(commandsConfig).Result;
+            Commands = await Client.UseCommandsNextAsync(commandsConfig).ConfigureAwait(false);
         }
 
-        private void CreateDiscordClient()
+        private async Task CreateDiscordClient()
         {
             Client = new DiscordShardedClient(_config);
-            Interactivity = Client.GetInteractivityAsync().Result;
+            Interactivity = await Client.GetInteractivityAsync().ConfigureAwait(false);
             Client.Ready += OnClientReady;
-            SlashCommandsExt = Client.UseSlashCommandsAsync().Result;
-            
+            SlashCommandsExt = await Client.UseSlashCommandsAsync().ConfigureAwait(false);
+            if(!Options.ZombieCure) return;
+            Client.ClientErrored += Actions.ClientErrors.Errored;
+            Client.SocketErrored += Actions.SocketErrors.Errored;
+            Client.SocketClosed += Actions.SocketErrors.Closed;
+
         }
 
         private static void SetDiscordConfig()

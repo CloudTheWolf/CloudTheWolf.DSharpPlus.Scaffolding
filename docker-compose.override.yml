@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  cloudthewolf.dsharpplus.scaffolding.worker:
+    environment:
+      - DOTNET_ENVIRONMENT=Development
+    volumes:
+      - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro

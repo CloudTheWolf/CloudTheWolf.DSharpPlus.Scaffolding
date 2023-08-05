@@ -19,7 +19,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            while (!stoppingToken.IsCancellationRequested) 
             {
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
                 if(Program.configuration.GetValue<bool>("ShardMode"))

@@ -29,10 +29,12 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private static void ConfigureServices(IServiceCollection serviceCollection)
         {
-
-
-            var config = "appsettings.json";
-
+            var configPath = Environment.GetEnvironmentVariable("WORKER_CONFIG_DIR");
+            if (!string.IsNullOrEmpty(configPath) && !configPath.EndsWith("/"))
+            {
+                configPath = $"{configPath}/";
+            }
+            var config = $"{configPath}appsettings.json";
 
             serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
             {

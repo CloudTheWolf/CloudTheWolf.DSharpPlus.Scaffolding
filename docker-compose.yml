@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  cloudthewolf.dsharpplus.scaffolding.worker:
+    image: ${DOCKER_REGISTRY-}cloudthewolfdsharpplusscaffoldingworker
+    build:
+      context: .
+      dockerfile: CloudTheWolf.DSharpPlus.Scaffolding.Worker/Dockerfile

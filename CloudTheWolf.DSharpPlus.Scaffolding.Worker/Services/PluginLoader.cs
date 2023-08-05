@@ -36,33 +36,17 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 var interfaceType = typeof(IPlugin);
                 //Fetch all types that implement the interface IPlugin and are a class
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                var ts = new List<Type>();
-                var tsLikePlugin = new List<Type>();
 
-                foreach (var assembly in assemblies)
-                {
-                    var item = assembly.GetTypes();
-                    ts.Add(item.FirstOrDefault());
-                }
+                var ts = assemblies.Select(assembly => assembly.GetTypes()).Select(item => item.FirstOrDefault()).ToList();
 
-                foreach (var type in ts)
-                {
-                    if (interfaceType.IsAssignableFrom(type))
-                    {
-                        if (type.IsClass)
-                        {
-                            tsLikePlugin.Add(type);
-                        }
-                    }
-                }
-
-                var types = tsLikePlugin.ToArray();
+                var types = ts.Where(type => interfaceType.IsAssignableFrom(type)).Where(type => type.IsClass).ToArray();
 
                 //Create a new instance of all found types
                 foreach (var type in types)
                 {
                     Plugins.Add((IPlugin)Activator.CreateInstance(type));
                 }
+
             }
             catch (Exception e)
             {
@@ -91,27 +75,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 var interfaceType = typeof(IShardPlugin);
                 //Fetch all types that implement the interface IPlugin and are a class
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                var ts = new List<Type>();
-                var tsLikePlugin = new List<Type>();
 
-                foreach (var assembly in assemblies)
-                {
-                    var item = assembly.GetTypes();
-                    ts.Add(item.FirstOrDefault());
-                }
+                var ts = assemblies.Select(assembly => assembly.GetTypes()).Select(item => item.FirstOrDefault()).ToList();
 
-                foreach (var type in ts)
-                {
-                    if (interfaceType.IsAssignableFrom(type))
-                    {
-                        if (type.IsClass)
-                        {
-                            tsLikePlugin.Add(type);
-                        }
-                    }
-                }
-
-                var types = tsLikePlugin.ToArray();
+                var types = ts.Where(type => interfaceType.IsAssignableFrom(type)).Where(type => type.IsClass).ToArray();
 
                 //Create a new instance of all found types
                 foreach (var type in types)
