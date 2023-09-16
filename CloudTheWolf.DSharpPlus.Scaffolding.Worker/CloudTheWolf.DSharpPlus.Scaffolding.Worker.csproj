@@ -19,10 +19,10 @@
     </Content>
   </ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	<!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<OutputPath>E:\Harmony</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
   <ItemGroup>
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.0.0.1" />
