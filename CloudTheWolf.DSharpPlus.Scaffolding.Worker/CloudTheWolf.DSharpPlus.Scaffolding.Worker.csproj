@@ -19,19 +19,14 @@
     </Content>
   </ItemGroup>
 
-	<!--<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>E:\Harmony</OutputPath>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>-->
-
   <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.0.0.1" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.1.1.4" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="7.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.1.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
