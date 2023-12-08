@@ -41,8 +41,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Logger.LogInformation("Bot Starting!");
             LoadConfig();
             SetDiscordConfig();
-            CreateDiscordClient();
-            CreateClientCommandConfiguration();
+            await CreateDiscordClientAsync();
+            await CreateClientCommandConfiguration();
             InitPlugins();
             await Client.StartAsync();
             await Task.Delay(-1, stoppingToken);
@@ -87,21 +87,15 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Commands = await Client.UseCommandsNextAsync(commandsConfig).ConfigureAwait(false);
         }
 
-        private async Task CreateDiscordClient()
+        private async Task CreateDiscordClientAsync()
         {
             Client = new DiscordShardedClient(_config);
-            /*
+            
             Interactivity = await Client.UseInteractivityAsync(new InteractivityConfiguration
             {
                 Timeout = TimeSpan.FromMinutes(1)
             });
-            */
-            // We should be using the above, however this seems to hit Rate Limits for no reason...
-            // See https://github.com/DSharpPlus/DSharpPlus/issues/1700 
-            Interactivity = Client.UseInteractivityAsync(new InteractivityConfiguration
-            {
-                Timeout = TimeSpan.FromMinutes(1)
-            }).Result;
+            
             Client.Ready += OnClientReady;
             SlashCommandsExt = await Client.UseSlashCommandsAsync();
             if(!Options.ZombieCure) return;
