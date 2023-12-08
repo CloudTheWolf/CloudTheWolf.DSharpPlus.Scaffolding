@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
-    public class Example : IPlugin, IShardPlugin
+    public class Example : IShardPlugin
     {
         public string Name => "Example Plugin";
 
@@ -26,33 +26,15 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
         public static ILogger<Logger> Logger;
 
         public List<string> MyCommandsList = new List<string>();
-        public dynamic Bot { get; set; }
-        
-        public void InitPlugin(IShardBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, 
-            IConfigurationRoot applicationConfig)
+        public IShardBot Bot { get; set; }
+
+        public void InitPlugin(IShardBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
         {
             Logger = logger;
             LoadConfig(applicationConfig);
             RegisterCommands(bot);
-            Console.WriteLine($"[{Name}] Has loaded in Shard Mode ");
+            Console.WriteLine("Hello World");
             Bot = bot;
-        }
-
-        public void InitPlugin(IBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration,
-            IConfigurationRoot applicationConfig)
-        {
-            Logger = logger;
-            LoadConfig(applicationConfig);
-            RegisterCommands(bot);
-            Console.WriteLine($"[{Name}] Has loaded in Non-Shard Mode ");
-            Bot = bot;
-        }
-
-        private void RegisterCommands(IBot bot)
-        {
-            bot.SlashCommandsExt.RegisterCommands<ExampleSlashCommands>();
-            bot.Commands.RegisterCommands<ExampleCommands>();
-            Logger.LogInformation($"{Name}: Registered {nameof(ExampleCommands)}!");
         }
 
         private void RegisterCommands(IShardBot bot)
@@ -107,18 +89,5 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
                 }
             }
         }
-
-        public void UnloadPlugin(IBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration)
-        {
-            var commands = bot.Commands;
-
-            foreach (var command in commands.RegisteredCommands)
-            {
-                if (!MyCommandsList.Contains(command.Value.Name)) continue;
-                bot.Commands.UnregisterCommands(command.Value);
-            }
-
-        }
-
     }
 }
