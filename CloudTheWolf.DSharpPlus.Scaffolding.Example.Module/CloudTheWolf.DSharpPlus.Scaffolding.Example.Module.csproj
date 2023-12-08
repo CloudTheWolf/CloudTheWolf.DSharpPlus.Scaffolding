@@ -8,7 +8,7 @@
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>C:\bot\Plugins\Example\</OutputPath>
+		<OutputPath>E:\Harmony\</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 
