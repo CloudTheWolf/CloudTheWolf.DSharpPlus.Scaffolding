@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Configuration;
+using System;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 {
@@ -53,7 +54,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
             foreach (var plugin in PluginLoader.ShardPlugins)
             {
-                plugin.InitPlugin(this, Logger, _config, Program.configuration);
+                Console.WriteLine($"[SHARD MODE] Load {plugin.Value.Name}");
+                plugin.Value.InitPlugin(this, Logger, _config, Program.configuration);
             }
         }
 
@@ -88,13 +90,24 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         private async Task CreateDiscordClient()
         {
             Client = new DiscordShardedClient(_config);
-            Interactivity = await Client.GetInteractivityAsync().ConfigureAwait(false);
+            /*
+            Interactivity = await Client.UseInteractivityAsync(new InteractivityConfiguration
+            {
+                Timeout = TimeSpan.FromMinutes(1)
+            });
+            */
+            // We should be using the above, however this seems to hit Rate Limits for no reason...
+            // See https://github.com/DSharpPlus/DSharpPlus/issues/1700 
+            Interactivity = Client.UseInteractivityAsync(new InteractivityConfiguration
+            {
+                Timeout = TimeSpan.FromMinutes(1)
+            }).Result;
             Client.Ready += OnClientReady;
-            SlashCommandsExt = await Client.UseSlashCommandsAsync().ConfigureAwait(false);
+            SlashCommandsExt = await Client.UseSlashCommandsAsync();
             if(!Options.ZombieCure) return;
             Client.ClientErrored += Actions.ClientErrors.Errored;
             Client.SocketErrored += Actions.SocketErrors.Errored;
-            Client.SocketClosed += Actions.SocketErrors.Closed;
+            Client.SocketClosed += Actions.SocketErrors.Closed; 
 
         }
 
@@ -106,8 +119,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 Intents = DiscordIntents.All,
-                LoggerFactory = Logging.Logger.LoggerFactory,
-
+                LoggerFactory = Logging.Logger.LoggerFactory
             };
         }
 

@@ -56,8 +56,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
             foreach (var plugin in PluginLoader.Plugins)
             {
-                Console.WriteLine(plugin.Name);
-                plugin.InitPlugin(this, Logger, _config, Program.configuration);
+                Console.WriteLine($"Load {plugin.Value.Name}");
+                plugin.Value.InitPlugin(this, Logger, _config, Program.configuration);
             }
         }
 
@@ -90,13 +90,14 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         private void CreateDiscordClient()
         {
             Client = new DiscordClient(_config);
-            Interactivity = Client.GetInteractivity();
-            Client.Ready += OnClientReady;
-            SlashCommandsExt = Client.UseSlashCommands();
             Client.UseInteractivity(new InteractivityConfiguration
             {
                 Timeout = TimeSpan.FromMinutes(1)
             });
+            Interactivity = Client.GetInteractivity();
+            Client.Ready += OnClientReady;
+            SlashCommandsExt = Client.UseSlashCommands();
+            
         }
 
         private static void SetDiscordConfig()

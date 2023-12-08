@@ -4,47 +4,41 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
+using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Context;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
 {
     public class PluginLoader
     {
-        public List<IPlugin> Plugins { get; set; }
-        public List<IShardPlugin> ShardPlugins { get; set; }
+        public Dictionary<string, IPlugin> Plugins = new();
+        public Dictionary<string, IShardPlugin> ShardPlugins = new();
+        private Dictionary<string, CustomLoadContext> PluginLoadContexts = new();
+
 
         public void LoadPlugins()
         {
             try
             {
-                Plugins = new List<IPlugin>();
-
                 //Load the DLLs from the Plugins directory
-                if (Directory.Exists(Constants.PluginsFolder))
+                if (!Directory.Exists(Constants.PluginsFolder)) return;
+                var files = Directory.GetFiles(Constants.PluginsFolder);
+                foreach (var file in files)
                 {
-                    var dirs = Directory.GetDirectories(Constants.PluginsFolder);
-                    foreach (var dir in dirs)
+                    if (!file.EndsWith("dll")) continue;
+                    var loadContext = new CustomLoadContext();
+                    var assembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(file));
+
+                    // Get types that implement IPlugin
+                    var pluginTypes = assembly.GetTypes().Where(t =>
+                        typeof(IPlugin).IsAssignableFrom(t) && t.IsClass);
+
+                    // Create instance of each type and add to plugins list
+                    foreach (var type in pluginTypes)
                     {
-                        var files = Directory.GetFiles(dir);
-                        foreach (var file in files)
-                        {
-                            if (file.EndsWith("dll"))
-                                Assembly.LoadFrom(Path.GetFullPath(file));
-                        }
+                        var pluginInstance = (IPlugin)Activator.CreateInstance(type);
+                        Plugins[pluginInstance.Name] = pluginInstance;
+                        PluginLoadContexts[pluginInstance.Name] = loadContext;
                     }
-                }
-
-                var interfaceType = typeof(IPlugin);
-                //Fetch all types that implement the interface IPlugin and are a class
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-                var ts = assemblies.Select(assembly => assembly.GetTypes()).Select(item => item.FirstOrDefault()).ToList();
-
-                var types = ts.Where(type => interfaceType.IsAssignableFrom(type)).Where(type => type.IsClass).ToArray();
-
-                //Create a new instance of all found types
-                foreach (var type in types)
-                {
-                    Plugins.Add((IPlugin)Activator.CreateInstance(type));
                 }
 
             }
@@ -59,31 +53,26 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         {
             try
             {
-                ShardPlugins = new List<IShardPlugin>();
-
                 //Load the DLLs from the Plugins directory
-                if (Directory.Exists(Constants.PluginsFolder))
+                if (!Directory.Exists(Constants.PluginsFolder)) return;
+                var files = Directory.GetFiles(Constants.PluginsFolder);
+                foreach (var file in files)
                 {
-                        var files = Directory.GetFiles(Constants.PluginsFolder);
-                        foreach (var file in files)
-                        {
-                            if (file.EndsWith("dll"))
-                                Assembly.LoadFrom(Path.GetFullPath(file));
-                        }
-                }
+                    if (!file.EndsWith("dll")) continue;
+                    var loadContext = new CustomLoadContext();
+                    var assembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(file));
 
-                var interfaceType = typeof(IShardPlugin);
-                //Fetch all types that implement the interface IPlugin and are a class
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    // Get types that implement IPlugin
+                    var pluginTypes = assembly.GetTypes().Where(t =>
+                        typeof(IShardPlugin).IsAssignableFrom(t) && t.IsClass);
 
-                var ts = assemblies.Select(assembly => assembly.GetTypes()).Select(item => item.FirstOrDefault()).ToList();
-
-                var types = ts.Where(type => interfaceType.IsAssignableFrom(type)).Where(type => type.IsClass).ToArray();
-
-                //Create a new instance of all found types
-                foreach (var type in types)
-                {
-                    ShardPlugins.Add((IShardPlugin)Activator.CreateInstance(type));
+                    // Create instance of each type and add to plugins list
+                    foreach (var type in pluginTypes)
+                    {
+                        var pluginInstance = (IShardPlugin)Activator.CreateInstance(type);
+                        ShardPlugins[pluginInstance.Name] = pluginInstance;
+                        PluginLoadContexts[pluginInstance.Name] = loadContext;
+                    }
                 }
             }
             catch (Exception e)
