@@ -14,6 +14,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CloudTheWolf.DSharpPlus.Scaffolding.Worker.SystemCommands;
 using DSharpPlus.SlashCommands;
 using Microsoft.Extensions.Configuration;
 
@@ -44,9 +45,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             SetDiscordConfig();
             CreateDiscordClient();
             CreateClientCommandConfiguration();
+            RegisterCommands();
             InitPlugins();
             await Client.ConnectAsync();
-            ListAllCommands();
             await Task.Delay(-1, stoppingToken);
         }
 
@@ -113,26 +114,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             };
         }
 
-        private void ListAllCommands()
+        public void RegisterCommands()
         {
-            Console.WriteLine("Getting Commands");
-            Console.WriteLine("============");
-            foreach (var registeredCommand in Client.GetCommandsNext().RegisteredCommands)
-            {
-                Console.WriteLine($"Command: {registeredCommand.Value.Name} \nDesc: {registeredCommand.Value.Description} \nRoles:");
-                foreach (var args in registeredCommand.Value.Overloads.ToImmutableArray().SelectMany(keyValuePair => keyValuePair.Arguments))
-                {
-                    Console.WriteLine($"> Name: {args.Name}\n> Desc: {args.Description}");
-                }
-                Console.WriteLine("============");
-            }
-            Console.WriteLine("Getting Slash Commands");
-            Console.WriteLine("============");
-            foreach (var registeredCommand in SlashCommandsExt.RegisteredCommands)
-            {
-                Console.WriteLine($"Command: {registeredCommand.Key} \nDesc: {registeredCommand.Value}");
-                Console.WriteLine("============");
-            }
+            Commands.RegisterCommands<PluginManagerCommands>();
         }
 
         private static Task OnClientReady(DiscordClient sender, ReadyEventArgs readyEventArgs)
