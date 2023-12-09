@@ -33,7 +33,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private static DiscordConfiguration _config;
         private static dynamic _myConfig;
-        private static readonly PluginLoader PluginLoader = new PluginLoader();
+        internal static readonly PluginLoader PluginLoader = new PluginLoader();
 
         public static ILogger<Logger> Logger;
 

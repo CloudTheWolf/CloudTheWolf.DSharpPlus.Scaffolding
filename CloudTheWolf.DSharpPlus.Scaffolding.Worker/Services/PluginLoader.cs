@@ -18,7 +18,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// Dictionary of <see cref="IShardPlugin"/>s
         /// </summary>
         public Dictionary<string, IShardPlugin> ShardPlugins = new();
-        private Dictionary<string, CustomLoadContext> PluginLoadContexts = new();
+        public static Dictionary<string, CustomLoadContext> PluginLoadContexts = new();
 
 
         /// <summary>

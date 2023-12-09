@@ -15,7 +15,7 @@ using System.Reflection;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
-    public class Example : IShardPlugin
+    public class Example : IPlugin, IShardPlugin
     {
         public string Name => "Example Plugin";
 
@@ -26,9 +26,18 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
         public static ILogger<Logger> Logger;
 
         public List<string> MyCommandsList = new List<string>();
-        public IShardBot Bot { get; set; }
+        public dynamic Bot { get; set; }
 
         public void InitPlugin(IShardBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
+        {
+            Logger = logger;
+            LoadConfig(applicationConfig);
+            RegisterCommands(bot);
+            Console.WriteLine("Hello World");
+            Bot = bot;
+        }
+
+        public void InitPlugin(IBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
         {
             Logger = logger;
             LoadConfig(applicationConfig);
@@ -42,6 +51,16 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
             bot.SlashCommandsExt.RegisterCommands<ExampleSlashCommands>();
             bot.Commands.RegisterCommands<ExampleCommands>();
             Logger.LogInformation($"{Name}: Registered {nameof(ExampleCommands)}!");
+        }
+
+        private void RegisterCommands(IBot bot)
+        {
+            bot.SlashCommandsExt.RegisterCommands<ExampleSlashCommands>();
+            bot.Commands.RegisterCommands<ExampleCommands>();
+            GetCommandNames(typeof(ExampleCommands));
+            Logger.LogInformation($"{Name}: Registered {nameof(ExampleCommands)}!");
+            
+
         }
 
         private void LoadConfig(IConfigurationRoot applicationConfig)
@@ -88,6 +107,18 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
                     bot.Commands.UnregisterCommands(command.Value);
                 }
             }
+        }
+
+        public void UnloadPlugin(IBot bot, ILogger<Logger> logger, DiscordConfiguration discordConfiguration)
+        {
+            var commands = bot.Commands;
+            
+            foreach (var command in commands.RegisteredCommands)
+            {
+                if (!MyCommandsList.Contains(command.Value.Name)) continue;
+                bot.Commands.UnregisterCommands(command.Value);
+            }
+            
         }
     }
 }
