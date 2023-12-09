@@ -96,7 +96,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                 Timeout = TimeSpan.FromMinutes(1)
             });
             Interactivity = Client.GetInteractivity();
-            Client.Ready += OnClientReady;
+            Client.SessionCreated += OnSessionReady;
             SlashCommandsExt = Client.UseSlashCommands();
             
         }
@@ -119,7 +119,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Commands.RegisterCommands<PluginManagerCommands>();
         }
 
-        private static Task OnClientReady(DiscordClient sender, ReadyEventArgs readyEventArgs)
+        private static Task OnSessionReady(DiscordClient sender, SessionReadyEventArgs readyEventArgs)
         {
             Logger.LogInformation($"Bot Ready!");
             
