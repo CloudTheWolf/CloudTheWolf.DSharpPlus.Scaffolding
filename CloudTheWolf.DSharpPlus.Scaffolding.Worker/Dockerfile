@@ -5,5 +5,5 @@ WORKDIR /app
 
 FROM base AS final
 WORKDIR /app
-COPY /publish .
+COPY ./publish .
 ENTRYPOINT ["dotnet", "CloudTheWolf.DSharpPlus.Scaffolding.Worker.dll"]

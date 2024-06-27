@@ -8,6 +8,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <ApplicationIcon>logo.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
+    <EnableNETAnalyzers>False</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.1.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.1.0.1" />
     <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.2.0.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
