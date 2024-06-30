@@ -111,8 +111,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             {
                 Token = Options.Token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true,
-                LoggerFactory = Logging.Logger.LoggerFactory
+                AutoReconnect = true
             };
         }
 

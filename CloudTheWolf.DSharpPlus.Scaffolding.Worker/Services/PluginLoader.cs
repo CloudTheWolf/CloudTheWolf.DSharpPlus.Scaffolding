@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Context;
+using Microsoft.Extensions.Logging;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
 {
@@ -26,18 +26,17 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// </summary>
         public void LoadPlugins()
         {
-            try
+            //Load the DLLs from the Plugins directory
+            if (!Directory.Exists(Constants.PluginsFolder)) return;
+            var pluginDirectories = Directory.GetDirectories(Constants.PluginsFolder);
+            foreach (var pluginDir in pluginDirectories)
             {
-                //Load the DLLs from the Plugins directory
-                if (!Directory.Exists(Constants.PluginsFolder)) return;
-                var plugins = Directory.GetDirectories(Constants.PluginsFolder);
-                foreach (var plugin in plugins)
+                var files = Directory.GetFiles(pluginDir,"*.dll");
+                foreach (var file in files)
                 {
-                    var files = Directory.GetFiles(plugin);
-                    foreach (var file in files)
+                    try
                     {
-                        if (!file.EndsWith("dll")) continue;
-                        var loadContext = new CustomLoadContext();
+                        var loadContext = new CustomLoadContext(pluginDir);
                         var assembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(file));
 
                         // Get types that implement IPlugin
@@ -50,14 +49,14 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                             var pluginInstance = (IPlugin)Activator.CreateInstance(type);
                             Plugins[pluginInstance.Name] = pluginInstance;
                             PluginLoadContexts[pluginInstance.Name] = loadContext;
+                            Bot.Logger.LogInformation($"Loaded plugin: {pluginInstance.Name}");
                         }
                     }
+                    catch (Exception e)
+                    {
+                        continue;
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
             }
         }
 
@@ -66,18 +65,19 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// </summary>
         public void LoadShardPlugins()
         {
-            try
+
+            //Load the DLLs from the Plugins directory
+            if (!Directory.Exists(Constants.PluginsFolder)) return;
+            var plugins = Directory.GetDirectories(Constants.PluginsFolder);
+            foreach (var plugin in plugins)
             {
-                //Load the DLLs from the Plugins directory
-                if (!Directory.Exists(Constants.PluginsFolder)) return;
-                var plugins = Directory.GetDirectories(Constants.PluginsFolder);
-                foreach (var plugin in plugins)
+                var files = Directory.GetFiles(plugin);
+                foreach (var file in files)
                 {
-                    var files = Directory.GetFiles(plugin);
-                    foreach (var file in files)
+                    try
                     {
                         if (!file.EndsWith("dll")) continue;
-                        var loadContext = new CustomLoadContext();
+                        var loadContext = new CustomLoadContext(plugin);
                         var assembly = loadContext.LoadFromAssemblyPath(Path.GetFullPath(file));
 
                         // Get types that implement IShardPlugin
@@ -92,14 +92,12 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                             PluginLoadContexts[pluginInstance.Name] = loadContext;
                         }
                     }
+                    catch (Exception e)
+                    {
+                        throw;
+                    }
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
         }
-
     }
 }

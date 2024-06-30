@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -13,22 +14,38 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Context
     /// </summary>
     public class CustomLoadContext : AssemblyLoadContext
     {
-        /// <summary>
-        /// Load and <see cref="Assembly"/> using out custom context
-        /// </summary>
-        public CustomLoadContext() : base(isCollectible: true)
+        private string PluginDirectory;
+
+        public CustomLoadContext(string pluginDirectory) : base(isCollectible: true)
         {
-            // Nothing to do here, we just need to have isCollectible set
+            PluginDirectory = pluginDirectory;
         }
 
-        /// <summary>
-        /// Load and <see cref="Assembly"/>
-        /// </summary>
-        /// <param name="assemblyName">Name of the assembly to load</param>
-        /// <returns>null</returns>
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            // We don't actually need to do anything here so let's just return null
+
+            // Check if the assembly is already loaded
+            var assembly = Default.LoadFromAssemblyName(assemblyName);
+            if (assembly != null)
+            {
+                return assembly;
+            }
+
+            // Try to load from the main application directory
+            string assemblyPath = Path.Combine(AppContext.BaseDirectory, $"{assemblyName.Name}.dll");
+            if (File.Exists(assemblyPath))
+            {
+                return LoadFromAssemblyPath(assemblyPath);
+            }
+
+            // Try to load from the plugin directory
+            assemblyPath = Path.Combine(PluginDirectory, $"{assemblyName.Name}.dll");
+            if (File.Exists(assemblyPath))
+            {
+                return LoadFromAssemblyPath(assemblyPath);
+            }
+
+            Console.WriteLine($"Failed to load assembly: {assemblyName.FullName}");
             return null;
         }
     }
