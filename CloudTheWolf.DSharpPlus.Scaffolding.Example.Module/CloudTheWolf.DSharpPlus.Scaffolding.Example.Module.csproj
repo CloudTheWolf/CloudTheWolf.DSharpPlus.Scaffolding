@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <BaseOutputPath>bin\</BaseOutputPath>
-  </PropertyGroup>
+      <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <BaseOutputPath>bin\</BaseOutputPath>
+      </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>C:\bot\Plugins\Example</OutputPath>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-	</PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Azure.Identity" Version="1.12.0" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.0.0" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.0.7-beta" />
+      </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.1.0" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.2.0.2" />
-  </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\Plugins\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module&quot; /E /Y" />
+    </Target>
+	
 </Project>

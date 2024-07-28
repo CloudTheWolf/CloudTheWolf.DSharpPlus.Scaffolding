@@ -15,12 +15,12 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Actions
         {
             try
             {
-                sender.ReconnectAsync(true);
+                _ = sender.ReconnectAsync();
 
             }
             catch (Exception ex)
             {
-
+                Bot.Logger.LogError($"Something Went wrong and we could not reconnect: \n {ex.Message}");
                 Environment.Exit(500);
             }
         }

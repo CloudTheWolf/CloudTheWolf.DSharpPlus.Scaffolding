@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <UserSecretsId>dotnet-CloudTheWolf.DSharpPlus.Scaffolding.Worker-0A60E053-6D97-4B88-9050-870BA0C51813</UserSecretsId>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -10,6 +10,7 @@
     <ApplicationIcon>logo.ico</ApplicationIcon>
     <SignAssembly>False</SignAssembly>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,14 +25,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="2.1.0.3" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="2.2.0.4" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.9.1" />
-    <PackageReference Include="Magick.NET.Core" Version="13.9.1" />
+    <PackageReference Include="Azure.Identity" Version="1.12.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.0.0" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.0.7-beta" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.10.0" />
+    <PackageReference Include="Magick.NET.Core" Version="13.10.0" />
+    <PackageReference Include="McMaster.NETCore.Plugins" Version="1.4.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
   </ItemGroup>
 
@@ -46,7 +49,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SystemCommands\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\4.4.4\&quot; /E /Y" />
+    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\&quot; /E /Y" />
   </Target>
 </Project>

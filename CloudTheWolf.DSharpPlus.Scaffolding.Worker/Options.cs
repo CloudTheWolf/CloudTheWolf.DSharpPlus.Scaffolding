@@ -43,5 +43,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         /// Cure Zombie and Other abnormal status. (Set to false to handle this is a plugin)
         /// </summary>
         public static bool ZombieCure { get; set; }
+        public static bool RunInShardMode { get; internal set; }
     }
 }

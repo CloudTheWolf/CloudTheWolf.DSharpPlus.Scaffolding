@@ -21,19 +21,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         {
             while (!stoppingToken.IsCancellationRequested) 
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                if(Program.configuration.GetValue<bool>("ShardMode"))
-                {
-                    var bot = new ShardBot();
-                    await bot.RunAsync(stoppingToken, _logger);
-                    await Task.Delay(-1, stoppingToken);
-                }
-                else
-                {
-                    var bot = new Bot();
-                    await bot.RunAsync(stoppingToken, _logger);
-                    await Task.Delay(-1, stoppingToken);
-                }
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);                
+                var bot = new Bot();
+                await bot.RunAsync(stoppingToken, _logger);
+                await Task.Delay(-1, stoppingToken);
             }
         }
     }

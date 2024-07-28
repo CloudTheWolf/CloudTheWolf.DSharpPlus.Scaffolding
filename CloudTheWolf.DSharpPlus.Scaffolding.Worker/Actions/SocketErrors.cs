@@ -1,23 +1,21 @@
 ﻿using DSharpPlus.EventArgs;
 using DSharpPlus;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Actions
 {
-    using Microsoft.Extensions.Logging;
-    using Serilog;
+
+    
 
     internal class SocketErrors
     {
-        public static async Task Closed(DiscordClient sender, SocketCloseEventArgs e)
+        public static async Task Closed(DiscordClient sender, SocketClosedEventArgs e)
         {
             try
             {
-                await sender.ReconnectAsync(true);
+                await sender.ReconnectAsync();
             }
             catch (Exception ex)
             {
@@ -31,7 +29,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Actions
         {
             try
             {
-                await sender.ReconnectAsync(true);
+                await sender.ReconnectAsync();
             }
             catch (Exception ex)
             {
