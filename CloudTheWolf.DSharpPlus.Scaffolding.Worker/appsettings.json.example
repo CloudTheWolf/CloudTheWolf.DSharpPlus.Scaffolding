@@ -1,25 +1,61 @@
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information"
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
+    "ShardMode": false,
+    "UseZombieCure": true,
+    "Discord": {
+        "token": "{{DISCORD_TOKEN}}",
+        "prefix": "a!",
+        "enableDms": true,
+        "enableMentionPrefix": false,
+        "dmHelp": false,
+        "enableDefaultHelp": true
+    },
+    "Database": {
+        "type": "mysql",
+        "mysql": {
+            "server": "",
+            "port": 3306,
+            "userid": "",
+            "password": "",
+            "database": ""
+        },
+        "sqlsrv": {
+            "server": "",
+            "port": 1433,
+            "userid": "",
+            "password": "",
+            "database": ""
+        },
+        "pgsql": {
+            "server": "",
+            "port": 5432,
+            "userid": "",
+            "password": "",
+            "database": ""
+        },
+        "surreal": {
+            "server": "http://127.0.0.1:8000",
+            "userid": "",
+            "password": "",
+            "namespace": "",
+            "database": "",
+        },
+        "sqlite": {
+            "datasource": "/sqlite/database.db",
+            "mode": 1,
+            "password": ""
+        }
+    },
+    "sql": {
+        "host": "localhost",
+        "user": "mySqlUser",
+        "pass": "MySqlPass",
+        "name": "MyDatabaseName"
     }
-  },
-  "ShardMode": false,
-  "UseZombieCure": true,
-  "Discord": {
-    "token": "{{DISCORD_TOKEN}}",
-    "prefix": "a!",
-    "enableDms": true,
-    "enableMentionPrefix": false,
-    "dmHelp": false,
-    "enableDefaultHelp": true
-  },
-  "sql": {
-    "host": "localhost",
-    "user": "mySqlUser",
-    "pass": "MySqlPass",
-    "name": "MyDatabaseName"
-  }
 }

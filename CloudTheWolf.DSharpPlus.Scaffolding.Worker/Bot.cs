@@ -8,12 +8,10 @@ using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.VoiceNext;
 using DSharpPlus.Commands;
 using Lavalink4NET.Players;
-using DSharpPlus.Commands.Processors.TextCommands;
 using DSharpPlus.Commands.Processors.SlashCommands;
 using DSharpPlus.Commands.Processors.MessageCommands;
 using DSharpPlus.Commands.Processors.UserCommands;
-using McMaster.NETCore.Plugins;
-using DSharpPlus.Commands.Trees;
+using CloudTheWolf.DSharpPlus.Scaffolding.Data;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 {
@@ -48,14 +46,59 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private static void LoadConfig()
         {
+            Options.LoadDiscordConfigFromFile = Program.configuration.GetValue<bool>("UseConfigFile");
+            if (Options.LoadDiscordConfigFromFile)
+            {
+                LoadDiscordConfigFromFile();
+            }
+            else
+            {
+                LoadConfigFromDatabase();
+            }
+        }
+
+        private static void LoadDiscordConfigFromFile()
+        {
             Options.Token = Program.configuration.GetValue<string>("Discord:token");
-            Options.Prefix = new string[] { Program.configuration.GetValue<string>("Discord:prefix") };
+            Options.Prefix = [Program.configuration.GetValue<string>("Discord:prefix")];
             Options.EnableDms = Program.configuration.GetValue<bool>("Discord:enableDms");
             Options.EnableMentionPrefix = Program.configuration.GetValue<bool>("Discord:enableMentionPrefix");
             Options.DmHelp = Program.configuration.GetValue<bool>("Discord:dmHelp");
             Options.DefaultHelp = Program.configuration.GetValue<bool>("Discord:enableDefaultHelp");
             Options.RunInShardMode = Program.configuration.GetValue<bool>("ShardMode");
 
+        }
+
+        private static void LoadConfigFromDatabase()
+        {
+            var database = DatabaseFactory.CreateDatabase(Program.configuration);
+            var results = database.Query("SELECT * FROM app_config;");
+            foreach(var result in results)
+            {
+                switch(result.name)
+                {
+                    case "token":
+                        Options.Token = result.sValue;
+                        break;
+                    case "prefix":
+                        Options.Prefix = [result.sValue];
+                        break;
+                    case "enable-dms":
+                        Options.EnableDms = Convert.ToBoolean(result.iValue);
+                        break;
+                    case "enable-mention-prefix":
+                        Options.EnableMentionPrefix = Convert.ToBoolean(result.iValue);                        break;
+                    case "dm-help":
+                        Options.DmHelp = Convert.ToBoolean(result.iValue);
+                        break;
+                    case "enable-default-help":
+                        Options.DefaultHelp = Convert.ToBoolean(result.iValue);
+                        break;
+                    case "enable-shard-mode":
+                        Options.RunInShardMode = Convert.ToBoolean(result.iValue);
+                        break;
+                }
+            }
         }
 
         private void InitClient()

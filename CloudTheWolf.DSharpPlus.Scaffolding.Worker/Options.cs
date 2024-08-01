@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 {
+    /// <summary>
+    /// Application config 
+    /// </summary>
     public class Options
     {
         /// <summary>
-        /// Set if the bot uses Sharding
+        /// Load Discord Config from appsettings.json instead of from a Database
         /// </summary>
-        public static bool ShardMode { get; set; }
-
+        public static bool LoadDiscordConfigFromFile { get; set; } = false;
         /// <summary>
         /// Prefix for commands
         /// </summary>
@@ -38,11 +40,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         /// Use DSharpPlus build in Help command
         /// </summary>
         public static bool DefaultHelp { get; set; }
-
         /// <summary>
-        /// Cure Zombie and Other abnormal status. (Set to false to handle this is a plugin)
+        /// Run the bot in Shard Mode
         /// </summary>
-        public static bool ZombieCure { get; set; }
         public static bool RunInShardMode { get; internal set; }
     }
 }
