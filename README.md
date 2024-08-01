@@ -1,3 +1,8 @@
+> [!WARNING]
+> **Version 5 Introduces Breaking Changes:**
+> 
+> See https://github.com/CloudTheWolf/CloudTheWolf.DSharpPlus.Scaffolding/wiki/Migration-from-4.x-to-5.x
+
 ![Logo of CloudTheWolf.DSharpPlus.Scaffolding](https://github.com/CloudTheWolf/CloudTheWolf.DSharpPlus.Scaffolding/raw/main/banner.png)
 
 # CloudTheWolf.DSharpPlus.Scaffolding
