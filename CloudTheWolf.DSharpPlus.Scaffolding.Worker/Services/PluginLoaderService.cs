@@ -1,6 +1,8 @@
-﻿using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using McMaster.NETCore.Plugins;
-using DSharpPlus;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
 {
@@ -53,11 +55,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                     {
                         var plugin = Activator.CreateInstance(pluginType) as IPlugin;
                         Plugins.Add(plugin);
-                        Bot.Logger.LogInformation($"Loaded plugin: {plugin?.Name}");
+                        Bot.Logger.Information($"Loaded plugin: {plugin?.Name}");
                     }
                     catch (Exception e)
                     {
-                        Bot.Logger.LogError($"Error Loading Plugin... \n {e.Message}");
+                        Bot.Logger.Error($"Error Loading Plugin... \n {e.Message}");
                         continue;
                     }
                 }

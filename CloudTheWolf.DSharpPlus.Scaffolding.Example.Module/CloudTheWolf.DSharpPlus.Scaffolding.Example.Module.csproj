@@ -9,12 +9,16 @@
 
       <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.12.0" />
-        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.0.0" />
-        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.0.7-beta" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.0.0.8" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.0.12-beta" />
       </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\Plugins\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module&quot; /E /Y" />
-    </Target>
-	
+      <ItemGroup>
+        <Folder Include="Classes\" />
+      </ItemGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>C:\bot\5.0.0\Plugins\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module</OutputPath>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 </Project>

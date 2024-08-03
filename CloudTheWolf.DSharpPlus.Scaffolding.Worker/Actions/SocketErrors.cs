@@ -1,10 +1,4 @@
-﻿using DSharpPlus.EventArgs;
-using DSharpPlus;
-using System;
-using System.Threading.Tasks;
-using Serilog;
-
-namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Actions
+﻿namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Actions
 {
 
     

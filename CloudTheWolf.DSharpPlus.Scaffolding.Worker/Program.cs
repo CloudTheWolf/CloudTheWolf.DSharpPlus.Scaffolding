@@ -1,11 +1,7 @@
+using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using System;
-using System.IO;
-using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 {
@@ -13,28 +9,29 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
     {
 
         public static IConfigurationRoot configuration;
-
         public static void Main(string[] args)
         {
+            Logger.Initialize();
             ServiceCollection serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 
             // Create service provider
-            Log.Information("Building service provider");
+            Logger.Log.LogInformation("Building service provider");
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
             CreateHostBuilder(args).Build().Run();
         }
 
-
         private static void ConfigureServices(IServiceCollection serviceCollection)
         {
+
             var configPath = Environment.GetEnvironmentVariable("WORKER_CONFIG_DIR");
             if (!string.IsNullOrEmpty(configPath) && !configPath.EndsWith("/"))
             {
                 configPath = $"{configPath}/";
             }
             var config = $"{configPath}appsettings.json";
+
 
             serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
             {
@@ -47,7 +44,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             .AddJsonFile(config, false)
             .Build();
 
-            serviceCollection.AddLogging();
+            serviceCollection.AddSerilog();
             serviceCollection.AddSingleton(configuration);
 
         }
@@ -55,7 +52,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
-                .UseSystemd()                
+                .UseSystemd()  
+                .UseSerilog()
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();                    
