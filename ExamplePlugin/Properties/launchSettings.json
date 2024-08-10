@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module": {
+        "commandName": "Executable",
+        "executablePath": "C:\\bot\\5.0.0\\\\CloudTheWolf.DSharpPlus.Scaffolding.Worker.exe",
+        "workingDirectory": "C:\\bot\\5.0.0",
+        "environmentVariables": {
+            "DOTNET_ENVIRONMENT": "Development"
+        }
+    }
+  }
+}

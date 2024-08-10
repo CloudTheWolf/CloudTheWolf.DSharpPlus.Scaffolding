@@ -46,11 +46,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
             Options.MySqlPassword = applicationConfig.GetValue<string>("SQL:Password");
             Options.MySqlDatabase = applicationConfig.GetValue<string>("SQL:Database");
         }
-
-        public void Dispose()
-        {
-            
-        }
         
     }
 }

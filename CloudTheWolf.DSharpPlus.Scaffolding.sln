@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Worker", "CloudTheWolf.DSharpPlus.Scaffolding.Worker\CloudTheWolf.DSharpPlus.Scaffolding.Worker.csproj", "{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module", "CloudTheWolf.DSharpPlus.Scaffolding.Example.Module\CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.csproj", "{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplePlugin", "ExamplePlugin\ExamplePlugin.csproj", "{5FA565A2-B9CA-48A8-8EF6-F6ED9597248F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{12B7EE18-7D52-4EDA-BEF1-63B6DEDC161C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A45D29C-D30F-4367-B0BD-F780C7C9D14D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FA565A2-B9CA-48A8-8EF6-F6ED9597248F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FA565A2-B9CA-48A8-8EF6-F6ED9597248F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FA565A2-B9CA-48A8-8EF6-F6ED9597248F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FA565A2-B9CA-48A8-8EF6-F6ED9597248F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

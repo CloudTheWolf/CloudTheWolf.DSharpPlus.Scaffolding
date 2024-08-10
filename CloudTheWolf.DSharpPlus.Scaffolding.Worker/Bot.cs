@@ -54,7 +54,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private static void LoadConfig()
         {
-            Options.LoadDiscordConfigFromFile = Program.configuration.GetValue<bool>("UseConfigFile");
+            Options.LoadDiscordConfigFromFile = Program.Configuration.GetValue<bool>("UseConfigFile");
             if (Options.LoadDiscordConfigFromFile)
             {
                 LoadDiscordConfigFromFile();
@@ -67,19 +67,19 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private static void LoadDiscordConfigFromFile()
         {
-            Options.Token = Program.configuration.GetValue<string>("Discord:token");
-            Options.Prefix = [Program.configuration.GetValue<string>("Discord:prefix")];
-            Options.EnableDms = Program.configuration.GetValue<bool>("Discord:enableDms");
-            Options.EnableMentionPrefix = Program.configuration.GetValue<bool>("Discord:enableMentionPrefix");
-            Options.DmHelp = Program.configuration.GetValue<bool>("Discord:dmHelp");
-            Options.DefaultHelp = Program.configuration.GetValue<bool>("Discord:enableDefaultHelp");
-            Options.RunInShardMode = Program.configuration.GetValue<bool>("ShardMode");
+            Options.Token = Program.Configuration.GetValue<string>("Discord:token");
+            Options.Prefix = [Program.Configuration.GetValue<string>("Discord:prefix")];
+            Options.EnableDms = Program.Configuration.GetValue<bool>("Discord:enableDms");
+            Options.EnableMentionPrefix = Program.Configuration.GetValue<bool>("Discord:enableMentionPrefix");
+            Options.DmHelp = Program.Configuration.GetValue<bool>("Discord:dmHelp");
+            Options.DefaultHelp = Program.Configuration.GetValue<bool>("Discord:enableDefaultHelp");
+            Options.RunInShardMode = Program.Configuration.GetValue<bool>("ShardMode");
 
         }
 
         private static void LoadConfigFromDatabase()
         {
-            var database = DatabaseFactory.CreateDatabase(Program.configuration);
+            var database = DatabaseFactory.CreateDatabase(Program.Configuration);
             var results = database.Query("SELECT * FROM app_config;");
             foreach(var result in results)
             {
@@ -114,14 +114,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         {
             ClientBuilder = Options.RunInShardMode ? DiscordClientBuilder.CreateSharded(Options.Token,DiscordIntents.AllUnprivileged) :
                 DiscordClientBuilder.CreateDefault(Options.Token, DiscordIntents.AllUnprivileged);
-            var serilogLogger = new LoggerConfiguration()
-                .WriteTo.Console(outputTemplate:
-                    "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}",theme: AnsiConsoleTheme.Code)
-                .CreateLogger();
-            ClientBuilder.ConfigureLogging(builder =>
-            {
-                builder.AddSerilog(serilogLogger);
-            });
+            
+            ClientBuilder.ConfigureLogging(Program.MainLoggingBuilder);
         }
 
         private void InitPlugins()
@@ -164,7 +158,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             foreach (var plugin in PluginLoaderService.Plugins)
             {
                 Logger.Information($"Initialise Plugin {plugin.Name}");
-                plugin.InitPlugin(this, Logger, _config, Program.configuration);
+                plugin.InitPlugin(this, Logger, _config, Program.Configuration);
             }
 
             //await Commands.RefreshAsync();

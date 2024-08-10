@@ -8,7 +8,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
     public class Program
     {
 
-        public static IConfigurationRoot configuration;
+        public static IConfigurationRoot Configuration;
+        public static ILoggerFactory MainLoggerFactory;
+        public static Action<ILoggingBuilder> MainLoggingBuilder;
         public static void Main(string[] args)
         {
             Logger.Initialize();
@@ -32,20 +34,24 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             }
             var config = $"{configPath}appsettings.json";
 
-
-            serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
+            MainLoggingBuilder = builder =>
             {
+                builder.SetMinimumLevel(LogLevel.Trace);
                 builder
                     .AddSerilog(dispose: true);
-            }));
+            };
 
-            configuration = new ConfigurationBuilder()
+            MainLoggerFactory = LoggerFactory.Create(MainLoggingBuilder);
+
+            serviceCollection.AddSingleton(MainLoggerFactory);
+
+            Configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
             .AddJsonFile(config, false)
             .Build();
 
             serviceCollection.AddSerilog();
-            serviceCollection.AddSingleton(configuration);
+            serviceCollection.AddSingleton(Configuration);
 
         }
 
