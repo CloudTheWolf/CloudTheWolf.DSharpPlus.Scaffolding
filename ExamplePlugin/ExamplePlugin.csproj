@@ -9,7 +9,7 @@
 
       <ItemGroup>
         <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.0.1.1" />
-        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.1.2-beta" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.1.5-beta" />
       </ItemGroup>
 
       <ItemGroup>

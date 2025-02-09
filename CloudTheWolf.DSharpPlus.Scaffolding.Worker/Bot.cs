@@ -14,6 +14,8 @@ using ILogger = Serilog.ILogger;
 using Logger = CloudTheWolf.DSharpPlus.Scaffolding.Logging.Logger;
 using DSharpPlus.Commands.Trees;
 using System.Collections.Generic;
+using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Registry;
+using DSharpPlus.Commands.Processors.TextCommands;
 
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
@@ -26,6 +28,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         public InteractivityExtension Interactivity { get; set; }
         public CommandsExtension Commands { get; set; }
         public List<CommandBuilder> CommandsList { get; set; }
+        public EventHandlerRegistry EventHandlerRegistry { get; } = new();
         public DiscordClient Client { get; set; }
         public LavalinkPlayerOptions LavalinkPlayerOptions { get ; set; }
 
@@ -39,12 +42,9 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         {
             LoggerItem = logger;
             Logger.Log.LogInformation("Bot Starting!");
-            
-            
             LoadConfig();
             InitClient();
             Client = ClientBuilder.Build();
-            //InitCommands();
             await Client.ConnectAsync();
             Logger.Log.LogInformation("Ready to work!");
             await Task.Delay(-1, stoppingToken);
@@ -73,6 +73,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Options.DefaultHelp = Program.Configuration.GetValue<bool>("Discord:enableDefaultHelp");
             Options.RunInShardMode = Program.Configuration.GetValue<bool>("ShardMode");
             Options.Intents = Program.Configuration.GetValue<int>("Discord:IntentIds");
+            Options.DebugGuildId = Program.Configuration.GetValue<ulong>("Discord.DebugGuildId");
 
         }
 
@@ -132,14 +133,16 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                     combinedIntents)
                 : DiscordClientBuilder.CreateDefault(Options.Token,
                     combinedIntents);
-            ClientBuilder.ConfigureEventHandlers(
-                e => e.HandleSessionCreated(OnSeasonCreated));
+            EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSeasonCreated));
+            
+
             CommandsList = [];
             InitPlugins();
             InitCommands();
+            
             var commandsConfiguration = new Action<IServiceProvider, CommandsExtension>((serviceProvider, commandsExtension) =>
             {
-                commandsExtension.AddProcessors([new SlashCommandProcessor(), new MessageCommandProcessor(), new UserCommandProcessor()]);
+                commandsExtension.AddProcessors([new SlashCommandProcessor(), new MessageCommandProcessor(), new UserCommandProcessor(), new TextCommandProcessor()]);
                 foreach (var command in CommandsList)
                 {
                     commandsExtension.AddCommand(command);
@@ -148,9 +151,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             ClientBuilder.UseCommands(commandsConfiguration, new CommandsConfiguration()
             {
                 RegisterDefaultCommandProcessors = false,
-                DebugGuildId = 657208517748326422
+                DebugGuildId = Options.DebugGuildId
             });
-            
+            var events = EventHandlerRegistry.ConfigureAll;
+            ClientBuilder.ConfigureEventHandlers(events);
             ClientBuilder.ConfigureLogging(Program.MainLoggingBuilder);
         }
 

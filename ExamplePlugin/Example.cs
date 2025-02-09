@@ -5,8 +5,13 @@ using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using DSharpPlus;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using CloudTheWolf.DSharpPlus.Scaffolding.Logging;
 using DSharpPlus.Commands;
 using DSharpPlus.Commands.Trees;
+using ILogger = Serilog.ILogger;
+using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using DSharpPlus.EventArgs;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
@@ -18,7 +23,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         public int Version => '1';
 
-        public static ILogger Logger;
 
         public IBot Bot { get; set; }
 
@@ -27,12 +31,20 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         public void InitPlugin(IBot bot, ILogger logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
         {
-            Logger = logger;
+            Logger.Initialize();
             LoadConfig(applicationConfig);
             RegisterCommands(bot);
-            Logger.Information("Example Plugin Loaded");
+            Logger.Log.LogInformation("Example Plugin Loaded");
+            bot.EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSessionCreated));
             Bot = bot;
         }
+
+        private async Task OnSessionCreated(DiscordClient client, SessionCreatedEventArgs args)
+        {
+            //if(args.Message.Author.IsBot) return;
+            Logger.Log.LogInformation("Message Created For Plugin");
+        }
+
 
         private void RegisterCommands(IBot bot)
         {

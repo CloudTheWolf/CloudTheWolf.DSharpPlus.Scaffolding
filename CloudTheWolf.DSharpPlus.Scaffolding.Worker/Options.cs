@@ -46,9 +46,22 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         /// Comma Separated List of Intent Ids
         /// </summary>
         public static int Intents { get; internal set; }
-
+        /// <summary>
+        /// Enable the GuildMembers Privileged Intent 
+        /// </summary>
         public static bool GuildMembers { get; internal set; }
+        /// <summary>
+        /// Enable the GuildPresences Privileged Intent 
+        /// </summary>
         public static bool GuildPresences { get; internal set; }
+        /// <summary>
+        /// Enable the MessageContents Privileged Intent 
+        /// </summary>
         public static bool MessageContents { get; internal set; }
+
+        /// <summary>
+        /// Enable Debug Guild (Set to 0 to disable)
+        /// </summary>
+        public static ulong DebugGuildId { get; internal set; } = 0;
     }
 }

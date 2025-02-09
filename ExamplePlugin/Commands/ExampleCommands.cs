@@ -10,7 +10,7 @@ using DSharpPlus.Entities;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands
 {
-    [Command("Examples"), Description("Example Commands"), RequirePermissions(botPermissions: [], userPermissions: [DiscordPermission.UseApplicationCommands])]
+    [Command("examples"), Description("Example Commands"), RequirePermissions(botPermissions: [], userPermissions: [DiscordPermission.UseApplicationCommands])]
     class ExampleCommands
     {
         [

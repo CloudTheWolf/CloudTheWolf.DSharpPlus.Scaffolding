@@ -19,7 +19,8 @@
             "guildMembers": false,
             "guildPresences": false,
             "messageContents": true
-        }
+        },
+        "debugGuildId": 0
     },
     "Database": {
         "type": "mysql",
