@@ -1,10 +1,12 @@
-﻿using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands;
+﻿using System;
+using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands;
 using Serilog;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using DSharpPlus;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using DSharpPlus.Commands;
+using DSharpPlus.Commands.Trees;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 {
@@ -18,7 +20,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         public static ILogger Logger;
 
-        public List<string> MyCommandsList = new List<string>();
         public IBot Bot { get; set; }
 
         internal CommandsExtension Commands { get; set; }
@@ -35,7 +36,8 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
 
         private void RegisterCommands(IBot bot)
         {
-            bot.Commands.AddCommands(typeof(ExampleCommands));
+            var exampleCommands = CommandBuilder.From(typeof(ExampleCommands));
+            bot.CommandsList.Add(exampleCommands);
         }
 
         private void LoadConfig(IConfigurationRoot applicationConfig)

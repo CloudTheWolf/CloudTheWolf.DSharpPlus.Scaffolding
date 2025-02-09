@@ -14,7 +14,12 @@
         "enableDms": true,
         "enableMentionPrefix": false,
         "dmHelp": false,
-        "enableDefaultHelp": true
+        "enableDefaultHelp": true,
+        "priviligedIntents": {
+            "guildMembers": false,
+            "guildPresences": false,
+            "messageContents": true
+        }
     },
     "Database": {
         "type": "mysql",

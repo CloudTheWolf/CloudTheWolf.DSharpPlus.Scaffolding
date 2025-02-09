@@ -10,13 +10,14 @@ using DSharpPlus.Entities;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands
 {
-
+    [Command("Examples"), Description("Example Commands"), RequirePermissions(botPermissions: [], userPermissions: [DiscordPermission.UseApplicationCommands])]
     class ExampleCommands
     {
         [
             Command("example"),
             Description("An Example Command"),
-            RequirePermissions(botPermissions: DiscordPermissions.None, userPermissions: DiscordPermissions.UseApplicationCommands),            
+            RequirePermissions(botPermissions: [], userPermissions:
+                [DiscordPermission.UseApplicationCommands]),
         ]
         
         public async Task GetConfigSettings(

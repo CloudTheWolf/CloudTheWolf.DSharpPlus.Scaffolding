@@ -1,9 +1,7 @@
 ﻿using System.Threading;
-using Serilog.Core;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services;
 using DSharpPlus.Interactivity;
-using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.VoiceNext;
 using DSharpPlus.Commands;
 using Lavalink4NET.Players;
@@ -12,8 +10,10 @@ using DSharpPlus.Commands.Processors.MessageCommands;
 using DSharpPlus.Commands.Processors.UserCommands;
 using CloudTheWolf.DSharpPlus.Scaffolding.Data;
 using Microsoft.Extensions.Configuration;
-using Serilog.Sinks.SystemConsole.Themes;
 using ILogger = Serilog.ILogger;
+using Logger = CloudTheWolf.DSharpPlus.Scaffolding.Logging.Logger;
+using DSharpPlus.Commands.Trees;
+using System.Collections.Generic;
 
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
@@ -25,6 +25,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         public DiscordRestClient Rest { get; set; }
         public InteractivityExtension Interactivity { get; set; }
         public CommandsExtension Commands { get; set; }
+        public List<CommandBuilder> CommandsList { get; set; }
         public DiscordClient Client { get; set; }
         public LavalinkPlayerOptions LavalinkPlayerOptions { get ; set; }
 
@@ -32,23 +33,20 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         private static dynamic _myConfig;
         internal static PluginLoaderService PluginLoaderService = new();
 
-        public static ILogger Logger;
+        private static ILogger LoggerItem;
 
         public async Task RunAsync(CancellationToken stoppingToken, ILogger logger)
         {
-            
-            Logger = logger;
-            Logger.Information("Bot Starting!");
+            LoggerItem = logger;
+            Logger.Log.LogInformation("Bot Starting!");
             
             
             LoadConfig();
             InitClient();
-            InitPlugins();
             Client = ClientBuilder.Build();
-            CreateDiscordClient();
-            InitCommands();
+            //InitCommands();
             await Client.ConnectAsync();
-            Logger.Information("Ready to work!");
+            Logger.Log.LogInformation("Ready to work!");
             await Task.Delay(-1, stoppingToken);
         }
 
@@ -74,6 +72,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Options.DmHelp = Program.Configuration.GetValue<bool>("Discord:dmHelp");
             Options.DefaultHelp = Program.Configuration.GetValue<bool>("Discord:enableDefaultHelp");
             Options.RunInShardMode = Program.Configuration.GetValue<bool>("ShardMode");
+            Options.Intents = Program.Configuration.GetValue<int>("Discord:IntentIds");
 
         }
 
@@ -112,57 +111,71 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         private void InitClient()
         {
-            ClientBuilder = Options.RunInShardMode ? DiscordClientBuilder.CreateSharded(Options.Token,DiscordIntents.AllUnprivileged) :
-                DiscordClientBuilder.CreateDefault(Options.Token, DiscordIntents.AllUnprivileged);
+
+            var combinedIntents = DiscordIntents.AllUnprivileged;
+            if(Options.GuildMembers)
+            {
+                combinedIntents |= DiscordIntents.GuildMembers;
+            }
+
+            if (Options.GuildPresences)
+            {
+                combinedIntents |= DiscordIntents.GuildPresences;
+            }
+
+            if (Options.MessageContents)
+            {
+                combinedIntents |= DiscordIntents.MessageContents;
+            }
+            ClientBuilder = Options.RunInShardMode
+                ? DiscordClientBuilder.CreateSharded(Options.Token,
+                    combinedIntents)
+                : DiscordClientBuilder.CreateDefault(Options.Token,
+                    combinedIntents);
+            ClientBuilder.ConfigureEventHandlers(
+                e => e.HandleSessionCreated(OnSeasonCreated));
+            CommandsList = [];
+            InitPlugins();
+            InitCommands();
+            var commandsConfiguration = new Action<IServiceProvider, CommandsExtension>((serviceProvider, commandsExtension) =>
+            {
+                commandsExtension.AddProcessors([new SlashCommandProcessor(), new MessageCommandProcessor(), new UserCommandProcessor()]);
+                foreach (var command in CommandsList)
+                {
+                    commandsExtension.AddCommand(command);
+                }
+            });
+            ClientBuilder.UseCommands(commandsConfiguration, new CommandsConfiguration()
+            {
+                RegisterDefaultCommandProcessors = false,
+                DebugGuildId = 657208517748326422
+            });
             
             ClientBuilder.ConfigureLogging(Program.MainLoggingBuilder);
         }
 
         private void InitPlugins()
         {
-            Logger.Information("Load Plugins");
+            Logger.Log.LogInformation("Load Plugins");
             PluginLoaderService.LoadPlugins();
         }
 
 
 
-        private async void CreateDiscordClient()
-        {            
-            Client.UseInteractivity(new InteractivityConfiguration
-            {
-                Timeout = TimeSpan.FromMinutes(1)
-            });
-            Interactivity = Client.GetInteractivity();
-            Client.SessionCreated += OnSeasonCreated;
-            CommandsConfiguration commandsConfiguration = new()
-            {
-                RegisterDefaultCommandProcessors = false,                
-            };
-
-            Commands = Client.UseCommands(commandsConfiguration);  
-            Commands.AddProcessors([
-                new SlashCommandProcessor(), new MessageCommandProcessor(), new UserCommandProcessor()
-            ]);
-
-        }
-
         private static Task OnSeasonCreated(DiscordClient sender, SessionCreatedEventArgs args)
         {
-            Logger.Information($"Bot Ready!");
+            Logger.Log.LogInformation($"Bot Ready!");
             
             return Task.CompletedTask;
         }
 
-        private async void InitCommands()
+        private void InitCommands()
         {
             foreach (var plugin in PluginLoaderService.Plugins)
             {
-                Logger.Information($"Initialise Plugin {plugin.Name}");
-                plugin.InitPlugin(this, Logger, _config, Program.Configuration);
+                Logger.Log.LogInformation($"Initialise Plugin {plugin.Name}");
+                plugin.InitPlugin(this, LoggerItem, _config, Program.Configuration);
             }
-
-            //await Commands.RefreshAsync();
-
         }
     }
 }

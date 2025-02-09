@@ -55,11 +55,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                     {
                         var plugin = Activator.CreateInstance(pluginType) as IPlugin;
                         Plugins.Add(plugin);
-                        Bot.Logger.Information($"Loaded plugin: {plugin?.Name}");
+                        Logger.Log.LogInformation($"Loaded plugin: {plugin?.Name}");
                     }
                     catch (Exception e)
                     {
-                        Bot.Logger.Error($"Error Loading Plugin... \n {e.Message}");
+                        Logger.Log.LogError($"Error Loading Plugin... \n {e.Message}");
                         continue;
                     }
                 }

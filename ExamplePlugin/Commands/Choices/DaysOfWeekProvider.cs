@@ -2,22 +2,26 @@
 using System.Threading.Tasks;
 using DSharpPlus.Commands.Processors.SlashCommands.ArgumentModifiers;
 using DSharpPlus.Commands.Trees;
+using DSharpPlus.Entities;
+using Google.Protobuf.WellKnownTypes;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands.Choices
 {
     internal class DaysOfWeekProvider : IChoiceProvider
     {
-        private static readonly IReadOnlyDictionary<string, object> daysOfTheWeek = new Dictionary<string, object>
+        private readonly IEnumerable<DiscordApplicationCommandOptionChoice> _commandOptions = new List<DiscordApplicationCommandOptionChoice>
         {
-            ["Monday"] = 1,
-            ["Tuesday"] = 2,
-            ["Wednesday"] = 3,
-            ["Thursday"] = 4,
-            ["Friday"] = 5,
-            ["Saturday"] = 6,
-            ["Sunday"] = 7
+            new("Monday", "1"),
+            new("Tuesday", "2"),
+            new("Wednesday", "3"),
+            new("Thursday", "4"),
+            new("Friday", "5"),
+            new("Saturday", "6"),
+            new("Sunday", "7")
         };
-
-        public ValueTask<IReadOnlyDictionary<string, object>> ProvideAsync(CommandParameter parameter) => ValueTask.FromResult(daysOfTheWeek);
+        ValueTask<IEnumerable<DiscordApplicationCommandOptionChoice>> IChoiceProvider.ProvideAsync(CommandParameter parameter)
+        {
+            return ValueTask.FromResult(_commandOptions);
+        }
     }
 }

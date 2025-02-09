@@ -12,7 +12,7 @@
             }
             catch (Exception ex)
             {
-                Bot.Logger.Error($"Something Went wrong and we could not reconnect: \n {ex.Message}");
+                Logger.Log.LogError($"Something Went wrong and we could not reconnect: \n {ex.Message}");
                 Environment.Exit(500);
             }
         }
