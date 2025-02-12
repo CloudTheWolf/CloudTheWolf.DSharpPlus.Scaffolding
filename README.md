@@ -28,11 +28,12 @@ Next, you will now need to put each individual plugin in it's own directory with
 
 Eg for a Plugin called Example you would now put it in `/Plugins/Example` instead of just adding it to `/Plugins`
 
+Additionally, the folder name much match the plugin DLL name. Eg if you plugin as `MyProject.Games.dll` then you much put the plugin in `/Plugins/MyProject.Games` 
+
 ## Why the change?
 This change is a bit of a big one, and is sort of a double edge sword. 
 
 First of this means that if you have multiple plugins that share the same dependancies, putting them in seperate folders will basically double the space requirements. 
-You are free to put all your plugins in a single "Master" directory, however this also means the benifits of this change are lost.
 
 Now, what are these benifits of this new design?
 First if all, you can now easilly add/remove plugins to help diagnose issue with your bot.
