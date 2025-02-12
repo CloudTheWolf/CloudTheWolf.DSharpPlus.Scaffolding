@@ -42,7 +42,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
         private async Task OnSessionCreated(DiscordClient client, SessionCreatedEventArgs args)
         {
             //if(args.Message.Author.IsBot) return;
-            Logger.Log.LogInformation("Message Created For Plugin");
+            Logger.Log.LogInformation("Session Created For Plugin");
         }
 
 

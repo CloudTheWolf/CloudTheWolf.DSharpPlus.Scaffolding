@@ -42,10 +42,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
         /// Run the bot in Shard Mode
         /// </summary>
         public static bool RunInShardMode { get; internal set; }
-        /// <summary>
-        /// Comma Separated List of Intent Ids
-        /// </summary>
-        public static int Intents { get; internal set; }
+
         /// <summary>
         /// Enable the GuildMembers Privileged Intent 
         /// </summary>

@@ -72,8 +72,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             Options.DmHelp = Program.Configuration.GetValue<bool>("Discord:dmHelp");
             Options.DefaultHelp = Program.Configuration.GetValue<bool>("Discord:enableDefaultHelp");
             Options.RunInShardMode = Program.Configuration.GetValue<bool>("ShardMode");
-            Options.Intents = Program.Configuration.GetValue<int>("Discord:IntentIds");
-            Options.DebugGuildId = Program.Configuration.GetValue<ulong>("Discord.DebugGuildId");
+            Options.GuildMembers = Program.Configuration.GetValue<bool>("Discord:privilegedIntents:guildMembers");
+            Options.GuildPresences = Program.Configuration.GetValue<bool>("Discord:privilegedIntents:guildPresences");
+            Options.MessageContents = Program.Configuration.GetValue<bool>("Discord:privilegedIntents:messageContents");
+            Options.DebugGuildId = Program.Configuration.GetValue<ulong>("Discord:DebugGuildId");
 
         }
 

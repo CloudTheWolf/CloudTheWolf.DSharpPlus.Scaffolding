@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     libgdiplus \
     fonts-freefont-ttf \
-    libssl1.1 \
+    libssl3 \
     libc6-dev \
     libx11-dev \
     libx11-6 \
@@ -17,10 +17,8 @@ RUN apt-get update && \
     libxrender1 \
     fontconfig \
     libfreetype6-dev \
-    libpng-dev && \
-    rm -rf /var/lib/apt/lists/* && \
-    curl -O http://ftp.us.debian.org/debian/pool/main/i/imagemagick/imagemagick_6.9.11.60+dfsg-1.3+deb11u3_amd64.deb && \
-    dpkg -i imagemagick_6.9.11.60+dfsg-1.3+deb11u3_amd64.deb
+    libpng-dev \ 
+    imagemagick
 
 FROM base AS final
 WORKDIR /app
