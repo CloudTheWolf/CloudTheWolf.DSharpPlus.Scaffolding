@@ -35,8 +35,17 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
             LoadConfig(applicationConfig);
             RegisterCommands(bot);
             Logger.Log.LogInformation("Example Plugin Loaded");
-            bot.EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSessionCreated));
+            bot.EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSessionCreated)
+                .HandleGuildDownloadCompleted(Downloaded));
             Bot = bot;
+        }
+
+        private async Task Downloaded(DiscordClient client, GuildDownloadCompletedEventArgs args)
+        {
+            foreach (var discordGuild in args.Guilds)
+            {
+                Logger.Log.LogInformation($"{discordGuild.Value.Name}");
+            }
         }
 
         private async Task OnSessionCreated(DiscordClient client, SessionCreatedEventArgs args)
