@@ -27,7 +27,6 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// </summary>
         public void LoadPlugins()
         {
-            //Load the DLLs from the Plugins directory
             if (!Directory.Exists(Constants.PluginsFolder)) return;
             var pluginPath = Directory.GetDirectories(Constants.PluginsFolder);
             foreach (var dir in pluginPath)
