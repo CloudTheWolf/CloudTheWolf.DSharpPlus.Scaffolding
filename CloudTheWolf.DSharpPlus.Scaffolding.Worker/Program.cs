@@ -65,4 +65,5 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                     services.AddHostedService<Worker>();                    
                 });
     }
+
 }

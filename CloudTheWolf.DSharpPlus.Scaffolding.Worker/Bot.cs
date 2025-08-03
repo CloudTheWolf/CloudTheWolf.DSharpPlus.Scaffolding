@@ -16,6 +16,7 @@ using DSharpPlus.Commands.Trees;
 using System.Collections.Generic;
 using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Registry;
 using DSharpPlus.Commands.Processors.TextCommands;
+using DSharpPlus.Interactivity.Extensions;
 
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
@@ -137,6 +138,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                     combinedIntents);
             EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSeasonCreated));
             
+            ClientBuilder.UseInteractivity(new InteractivityConfiguration()
+            {
+                Timeout = TimeSpan.FromMinutes(2)
+            });
 
             CommandsList = [];
             InitPlugins();
@@ -158,6 +163,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
             var events = EventHandlerRegistry.ConfigureAll;
             ClientBuilder.ConfigureEventHandlers(events);
             ClientBuilder.ConfigureLogging(Program.MainLoggingBuilder);
+            
         }
 
         private void InitPlugins()
