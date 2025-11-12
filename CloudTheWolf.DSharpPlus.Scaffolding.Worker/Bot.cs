@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using CloudTheWolf.DSharpPlus.Scaffolding.Worker.Registry;
 using DSharpPlus.Commands.Processors.TextCommands;
 using DSharpPlus.Interactivity.Extensions;
+using DSharpPlus.Net;
 
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
@@ -25,7 +26,7 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
     {
         public DiscordClientBuilder ClientBuilder { get; set; }
         public VoiceNextExtension Voice { get; set; }
-        public DiscordRestClient Rest { get; set; }
+        public RestClient Rest { get; set; }
         public InteractivityExtension Interactivity { get; set; }
         public CommandsExtension Commands { get; set; }
         public List<CommandBuilder> CommandsList { get; set; }
