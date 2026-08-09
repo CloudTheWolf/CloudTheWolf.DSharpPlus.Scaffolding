@@ -153,13 +153,14 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
                 commandsExtension.AddProcessors([new SlashCommandProcessor(), new MessageCommandProcessor(), new UserCommandProcessor(), new TextCommandProcessor()]);
                 foreach (var command in CommandsList)
                 {
+                    Console.WriteLine($"[COMMAND] Add Command {command.Name}");
                     commandsExtension.AddCommand(command);
+ 
                 }
             });
             ClientBuilder.UseCommands(commandsConfiguration, new CommandsConfiguration()
             {
-                RegisterDefaultCommandProcessors = false,
-                DebugGuildId = Options.DebugGuildId
+                RegisterDefaultCommandProcessors = false
             });
             var events = EventHandlerRegistry.ConfigureAll;
             ClientBuilder.ConfigureEventHandlers(events);
