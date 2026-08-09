@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS base
+FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
 WORKDIR /app
 
 # The Worker transitively requires Microsoft.AspNetCore.App, while retaining the
