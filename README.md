@@ -41,7 +41,7 @@ This also means you can fully remove a plugin and all of its dependancies withou
 
 ## Hot loading and unloading plugins
 
-Worker 5.0.6 and newer can monitor the `Plugins` directory and load, replace, or unload
+Worker 5.3 and newer can monitor the `Plugins` directory and load, replace, or unload
 plugins without restarting the Worker process or service:
 
 ```json
