@@ -21,7 +21,7 @@ jobs:
         id: version
         shell: bash
         run: |
-          PATCH=$((GITHUB_RUN_NUMBER + 4))
+          PATCH=$((GITHUB_RUN_NUMBER + 3))
           echo "version=5.0.${PATCH}" >> "$GITHUB_OUTPUT"
           echo "Building version 5.0.${PATCH}"
 
@@ -38,8 +38,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: ./Dockerfile
+          context: ./CloudTheWolf.DSharpPlus.Scaffolding.Worker 
+          file: ./CloudTheWolf.DSharpPlus.Scaffolding.Worker/Dockerfile
           push: ${{ github.event_name == 'push' }}
           tags: |
             cloudthewolf/discord-bot-server:${{ steps.version.outputs.version }}
