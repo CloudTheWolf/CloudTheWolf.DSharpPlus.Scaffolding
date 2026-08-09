@@ -1,8 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
+using DSharpPlus.Commands.Trees;
+using DSharpPlus.Interactivity;
+using DSharpPlus.VoiceNext;
+using Lavalink4NET.Players;
 using McMaster.NETCore.Plugins;
+using Microsoft.Extensions.Configuration;
 
 namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
 {
@@ -11,6 +17,18 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
     /// </summary>
     public class PluginLoaderService
     {
+        private static readonly Type[] SharedPluginTypes =
+        [
+            typeof(IPlugin),
+            typeof(DiscordClient),
+            typeof(CommandBuilder),
+            typeof(InteractivityExtension),
+            typeof(VoiceNextExtension),
+            typeof(LavalinkPlayerOptions),
+            typeof(IConfigurationRoot),
+            typeof(Serilog.ILogger)
+        ];
+
         /// <summary>
         /// List of plugin loaders
         /// </summary>
@@ -45,43 +63,86 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 var dirName = Path.GetFileName(dir);
                 var dirPath = Path.GetFullPath(dir);
                 var pluginDll = Path.Combine(dirPath, dirName + ".dll");
-                if (File.Exists(pluginDll))
+                if (!File.Exists(pluginDll))
                 {
-                    var loader = PluginLoader.CreateFromAssemblyFile(
+                    continue;
+                }
+
+                PluginLoader loader = null;
+                try
+                {
+                    loader = PluginLoader.CreateFromAssemblyFile(
                         pluginDll,
                         isUnloadable: true,
-                        sharedTypes: [typeof(IPlugin)],
+                        sharedTypes: SharedPluginTypes,
                         configure: config => config.LoadInMemory = true);
+
+                    var pluginTypes = loader
+                        .LoadDefaultAssembly()
+                        .GetTypes()
+                        .Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract)
+                        .ToArray();
+
                     _loaders.Add(loader);
-                }
-            }
+                    loader = null; // Ownership has transferred to _loaders.
 
-            foreach (var loader in _loaders)
-            {
-                foreach (var pluginType in loader
-                    .LoadDefaultAssembly()
-                    .GetTypes()
-                    .Where(t => typeof(IPlugin).IsAssignableFrom(t) && !t.IsAbstract))
-                {
-                    try
+                    foreach (var pluginType in pluginTypes)
                     {
-                        var plugin = (IPlugin)Activator.CreateInstance(pluginType)!;
-                        if (_plugins.Any(existing =>
-                                string.Equals(existing.Id, plugin.Id, StringComparison.OrdinalIgnoreCase)))
+                        try
                         {
-                            throw new InvalidOperationException(
-                                $"A plugin with the ID '{plugin.Id}' is already loaded.");
-                        }
+                            var plugin = (IPlugin)Activator.CreateInstance(pluginType)!;
+                            if (_plugins.Any(existing =>
+                                    string.Equals(existing.Id, plugin.Id, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                throw new InvalidOperationException(
+                                    $"A plugin with the ID '{plugin.Id}' is already loaded.");
+                            }
 
-                        _plugins.Add(plugin);
-                        Logger.Log.LogInformation(
-                            "Loaded plugin {PluginName} ({PluginId}) version {PluginVersion}",
-                            plugin.Name, plugin.Id, plugin.PluginVersion);
+                            _plugins.Add(plugin);
+                            Logger.Log.LogInformation(
+                                "Loaded plugin {PluginName} ({PluginId}) version {PluginVersion}",
+                                plugin.Name, plugin.Id, plugin.PluginVersion);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.Log.LogError(e,
+                                "Error loading plugin type {PluginType} from {PluginAssembly}",
+                                pluginType.FullName, pluginDll);
+                        }
                     }
-                    catch (Exception e)
+                }
+                catch (ReflectionTypeLoadException exception)
+                {
+                    Logger.Log.LogError(exception,
+                        "Plugin assembly {PluginAssembly} is incompatible with the Worker runtime and was skipped",
+                        pluginDll);
+
+                    foreach (var loaderException in exception.LoaderExceptions.Where(e => e is not null))
                     {
-                        Logger.Log.LogError(e, "Error loading plugin type {PluginType}", pluginType.FullName);
-                        continue;
+                        Logger.Log.LogError(loaderException,
+                            "Type loader error for plugin assembly {PluginAssembly}: {LoaderError}",
+                            pluginDll, loaderException!.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Logger.Log.LogError(exception,
+                        "Failed to load plugin assembly {PluginAssembly}; the plugin was skipped",
+                        pluginDll);
+                }
+                finally
+                {
+                    if (loader is not null)
+                    {
+                        try
+                        {
+                            loader.Dispose();
+                        }
+                        catch (Exception exception)
+                        {
+                            Logger.Log.LogError(exception,
+                                "Failed to release plugin assembly context for {PluginAssembly}", pluginDll);
+                        }
                     }
                 }
             }
