@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+name="CloudTheWolf DSharpPlus Scaffolding Worker"
+description="Extensible DSharpPlus Discord bot Worker"
+command="/opt/cloudthewolf-dsharpplus-scaffolding/CloudTheWolf.DSharpPlus.Scaffolding.Worker"
+command_user="cloudthewolf-bot:cloudthewolf-bot"
+command_background="yes"
+directory="/opt/cloudthewolf-dsharpplus-scaffolding"
+pidfile="/run/${RC_SVCNAME}.pid"
+export WORKER_CONFIG_DIR="/etc/cloudthewolf-dsharpplus-scaffolding"
+
+depend() {
+    need net
+    after firewall
+}

@@ -38,3 +38,68 @@ First of this means that if you have multiple plugins that share the same depend
 Now, what are these benifits of this new design?
 First if all, you can now easilly add/remove plugins to help diagnose issue with your bot.
 This also means you can fully remove a plugin and all of its dependancies without the risk of removing a shared depandancy that another plugin may use.
+
+## Hot loading and unloading plugins
+
+Worker 5.2 can monitor the `Plugins` directory and load, replace, or unload
+plugins without restarting the Worker process or service:
+
+```json
+{
+  "Plugins": {
+    "hotReload": true,
+    "reloadDelayMilliseconds": 1500
+  }
+}
+```
+
+Deploy plugins to `Plugins/<PluginName>/<PluginName>.dll`. Copy dependencies
+first and the entry DLL last. Move or delete the plugin directory to unload it;
+renaming it to `<PluginName>.disabled` also disables discovery.
+
+DSharpPlus finalizes commands and event handlers when its client is built, so a
+hot reload includes a short Discord gateway disconnect and reconnect. The Worker
+process remains alive, each plugin receives `ShutdownAsync`, and its collectible
+assembly context is released before the replacement is loaded. Changes are
+debounced, and a failed replacement reconnects the core bot without plugins so a
+subsequent corrected deployment can recover automatically.
+
+See the [ExamplePlugin migration guide](ExamplePlugin/README.md) for a complete
+`InitPlugin` to `PluginContext` conversion, shutdown guidance, and deployment
+layout.
+
+## Linux packages and releases
+
+The repository includes two GitHub Actions workflows:
+
+- **Build Linux packages** can be run manually for a branch, tag, or commit. It
+  builds self-contained `deb`, `rpm`, and `apk` packages for AMD64 and ARM64.
+- **Release Linux packages** runs for version tags such as `v5.3.0`. It builds
+  all six packages, creates a `SHA256SUMS` file, and creates or updates the
+  matching GitHub Release. Tags containing a hyphen, such as `v5.3.0-beta.1`,
+  are published as prereleases.
+
+Release tags must contain a numeric package version with two to four numeric
+parts and may have a prerelease suffix. You can also run the release workflow
+manually against an existing tag.
+
+Install a downloaded package with the package manager for your distribution:
+
+```bash
+# Debian or Ubuntu
+sudo apt install ./cloudthewolf-dsharpplus-scaffolding_5.3.0_amd64.deb
+
+# Fedora, RHEL, or a compatible distribution
+sudo dnf install ./cloudthewolf-dsharpplus-scaffolding_5.3.0_x86_64.rpm
+
+# Alpine Linux
+sudo apk add --allow-untrusted ./cloudthewolf-dsharpplus-scaffolding_5.3.0_x86_64.apk
+```
+
+The package installs the Worker under
+`/opt/cloudthewolf-dsharpplus-scaffolding`, creates the unprivileged
+`cloudthewolf-bot` service account, and enables a systemd or OpenRC service. It
+does not start the service automatically. Edit
+`/etc/cloudthewolf-dsharpplus-scaffolding/appsettings.json`, then start it with
+`sudo systemctl start cloudthewolf-dsharpplus-scaffolding` or
+`sudo rc-service cloudthewolf-dsharpplus-scaffolding start`.

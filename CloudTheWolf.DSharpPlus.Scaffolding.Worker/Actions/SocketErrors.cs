@@ -13,7 +13,7 @@
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
+                Logger.Log.LogError(ex, "Discord socket reconnection failed after the socket closed");
                 Environment.Exit(500);
             }
             
@@ -27,7 +27,7 @@
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message);
+                Logger.Log.LogError(ex, "Discord socket reconnection failed after a socket error");
                 Environment.Exit(500);
             }
         }

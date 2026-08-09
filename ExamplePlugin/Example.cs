@@ -1,15 +1,11 @@
-﻿using System;
-using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands;
+﻿using CloudTheWolf.DSharpPlus.Scaffolding.Example.Module.Commands;
 using Serilog;
 using CloudTheWolf.DSharpPlus.Scaffolding.Shared.Interfaces;
 using DSharpPlus;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using CloudTheWolf.DSharpPlus.Scaffolding.Logging;
-using DSharpPlus.Commands;
 using DSharpPlus.Commands.Trees;
 using ILogger = Serilog.ILogger;
-using Microsoft.Extensions.Logging;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus.EventArgs;
 
@@ -19,46 +15,59 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Example.Module
     {
         public string Name => "Example Plugin";
 
+        public string Id => "cloudthewolf.example";
+
         public string Description => "An Example Plugin to demo the system";
 
-        public int Version => '1';
+        public int Version => 1;
+
+        public System.Version PluginVersion => new(1, 0, 0);
+
+        private ILogger _logger;
 
 
-        public IBot Bot { get; set; }
-
-        internal CommandsExtension Commands { get; set; }
-
-
-        public void InitPlugin(IBot bot, ILogger logger, DiscordConfiguration discordConfiguration, IConfigurationRoot applicationConfig)
+        public Task InitializeAsync(PluginContext context, CancellationToken cancellationToken = default)
         {
-            Logger.Initialize();
-            LoadConfig(applicationConfig);
-            RegisterCommands(bot);
-            Logger.Log.LogInformation("Example Plugin Loaded");
-            bot.EventHandlerRegistry.Register(e => e.HandleSessionCreated(OnSessionCreated)
+            cancellationToken.ThrowIfCancellationRequested();
+            _logger = context.Logger.ForContext<Example>();
+            LoadConfig(context.Configuration);
+            RegisterCommands(context.Bot);
+            context.Bot.RegisterEventHandlers(Id, events => events.HandleSessionCreated(OnSessionCreated)
                 .HandleGuildDownloadCompleted(Downloaded));
-            Bot = bot;
+
+            _logger.Information("Example plugin {PluginId} version {PluginVersion} loaded",
+                Id, PluginVersion);
+            return Task.CompletedTask;
         }
 
-        private async Task Downloaded(DiscordClient client, GuildDownloadCompletedEventArgs args)
+        public Task ShutdownAsync(CancellationToken cancellationToken = default)
+        {
+            _logger?.Information("Example plugin {PluginId} stopped", Id);
+            _logger = null;
+            return Task.CompletedTask;
+        }
+
+        private Task Downloaded(DiscordClient client, GuildDownloadCompletedEventArgs args)
         {
             foreach (var discordGuild in args.Guilds)
             {
-                Logger.Log.LogInformation($"{discordGuild.Value.Name}");
+                _logger.Information("Guild {GuildName} downloaded", discordGuild.Value.Name);
             }
+
+            return Task.CompletedTask;
         }
 
-        private async Task OnSessionCreated(DiscordClient client, SessionCreatedEventArgs args)
+        private Task OnSessionCreated(DiscordClient client, SessionCreatedEventArgs args)
         {
-            //if(args.Message.Author.IsBot) return;
-            Logger.Log.LogInformation("Session Created For Plugin");
+            _logger.Information("Session created for plugin");
+            return Task.CompletedTask;
         }
 
 
         private void RegisterCommands(IBot bot)
         {
             var exampleCommands = CommandBuilder.From(typeof(ExampleCommands));
-            bot.CommandsList.Add(exampleCommands);
+            bot.RegisterCommand(exampleCommands);
         }
 
         private void LoadConfig(IConfigurationRoot applicationConfig)

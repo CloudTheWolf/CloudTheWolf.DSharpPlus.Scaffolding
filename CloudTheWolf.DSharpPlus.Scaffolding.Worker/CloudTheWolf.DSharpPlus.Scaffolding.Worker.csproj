@@ -11,8 +11,8 @@
     <SignAssembly>False</SignAssembly>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
     <ImplicitUsings>disable</ImplicitUsings>
-    <AssemblyVersion>5.1.0</AssemblyVersion>
-    <FileVersion>5.1.0</FileVersion>
+    <AssemblyVersion>5.3.0</AssemblyVersion>
+    <FileVersion>5.3.0</FileVersion>
     <IncludeSymbols>False</IncludeSymbols>
     <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
   </PropertyGroup>
@@ -29,12 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.1.0" />
-    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.1.9-beta" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.4.0.1" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Logging" Version="3.2.0.5" />
+    <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="4.0.1-beta" />
     <PackageReference Include="McMaster.NETCore.Plugins" Version="2.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="10.0.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,9 +53,7 @@
     <Folder Include="SystemCommands\" />
   </ItemGroup>
 
-	<Target Name="PostBuild"
-		  AfterTargets="PostBuildEvent"
-		  Condition="$([MSBuild]::IsOSPlatform('Windows'))">
-		<Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\&quot; /E /Y" />
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.3.0\&quot; /E /Y" />
 	</Target>
 </Project>

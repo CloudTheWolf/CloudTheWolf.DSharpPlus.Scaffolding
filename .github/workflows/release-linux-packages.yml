@@ -1,0 +1,76 @@
+name: Release Linux packages
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build, for example v5.3.0
+        required: true
+        type: string
+
+concurrency:
+  group: linux-release-${{ inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    name: Build packages
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build-linux-packages.yml
+    with:
+      version: ${{ inputs.tag || github.ref_name }}
+      ref: ${{ inputs.tag || github.ref }}
+
+  release:
+    name: Create GitHub release
+    needs: packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+
+    steps:
+      - name: Download package artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: linux-package-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create checksums
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(find artifacts -maxdepth 1 -type f | wc -l)" -eq 6
+          (
+            cd artifacts
+            sha256sum ./*.deb ./*.rpm ./*.apk > SHA256SUMS
+          )
+
+      - name: Create or update GitHub release
+        shell: bash
+        run: |
+          set -euo pipefail
+          prerelease=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            prerelease=(--prerelease)
+          fi
+
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" artifacts/* --clobber
+          else
+            gh release create "$RELEASE_TAG" artifacts/* \
+              --verify-tag \
+              --generate-notes \
+              "${prerelease[@]}"
+          fi

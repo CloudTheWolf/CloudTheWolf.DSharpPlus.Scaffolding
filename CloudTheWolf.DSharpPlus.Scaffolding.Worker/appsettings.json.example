@@ -8,6 +8,10 @@
     },
     "ShardMode": false,
     "UseZombieCure": true,
+    "Plugins": {
+        "hotReload": true,
+        "reloadDelayMilliseconds": 1500
+    },
     "Discord": {
         "token": "{{DISCORD_TOKEN}}",
         "prefix": "a!",
@@ -50,12 +54,20 @@
             "userid": "",
             "password": "",
             "namespace": "",
-            "database": "",
+            "database": ""
         },
         "sqlite": {
             "datasource": "/sqlite/database.db",
             "mode": 1,
             "password": ""
+        },
+        "supabase": {
+            "connectionString": "Host=db.PROJECT.supabase.co;Port=5432;Username=postgres;Password=;Database=postgres;SSL Mode=Require"
+        },
+        "firebase": {
+            "projectId": "",
+            "databaseId": "",
+            "detectEmulator": false
         }
     },
     "sql": {

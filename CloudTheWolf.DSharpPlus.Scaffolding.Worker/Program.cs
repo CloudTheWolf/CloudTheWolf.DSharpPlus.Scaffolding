@@ -9,61 +9,59 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
     {
 
         public static IConfigurationRoot Configuration;
-        public static ILoggerFactory MainLoggerFactory;
         public static Action<ILoggingBuilder> MainLoggingBuilder;
         public static void Main(string[] args)
         {
-            Logger.Initialize();
-            ServiceCollection serviceCollection = new ServiceCollection();
-            ConfigureServices(serviceCollection);
-
-            // Create service provider
-            Logger.Log.LogInformation("Building service provider");
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        private static void ConfigureServices(IServiceCollection serviceCollection)
-        {
-
-            var configPath = Environment.GetEnvironmentVariable("WORKER_CONFIG_DIR");
-            if (!string.IsNullOrEmpty(configPath) && !configPath.EndsWith("/"))
-            {
-                configPath = $"{configPath}/";
-            }
-            var config = $"{configPath}appsettings.json";
+            Configuration = BuildConfiguration();
+            Logger.Initialize(configuration => configuration.ReadFrom.Configuration(Configuration));
 
             MainLoggingBuilder = builder =>
             {
-                builder.SetMinimumLevel(LogLevel.Trace);
                 builder
-                    .AddSerilog(dispose: true);
+                    .ClearProviders()
+                    .AddConfiguration(Configuration.GetSection("Logging"))
+                    .AddSerilog(Serilog.Log.Logger, dispose: false);
             };
 
-            MainLoggerFactory = LoggerFactory.Create(MainLoggingBuilder);
-
-            serviceCollection.AddSingleton(MainLoggerFactory);
-
-            Configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-            .AddJsonFile(config, false)
-            .Build();
-
-            serviceCollection.AddSerilog();
-            serviceCollection.AddSingleton(Configuration);
-
+            try
+            {
+                Logger.Log.LogInformation("Starting the scaffolding worker");
+                CreateHostBuilder(args).Build().Run();
+            }
+            catch (Exception exception)
+            {
+                Logger.Log.LogCritical(exception, "The scaffolding worker terminated unexpectedly");
+                throw;
+            }
+            finally
+            {
+                Logger.Shutdown();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseWindowsService()
                 .UseSystemd()  
-                .UseSerilog()
+                .UseSerilog(Serilog.Log.Logger, dispose: false)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddSingleton(Configuration);
                     services.AddHostedService<Worker>();                    
                 });
+
+        private static IConfigurationRoot BuildConfiguration()
+        {
+            var configPath = Environment.GetEnvironmentVariable("WORKER_CONFIG_DIR");
+            var configFile = string.IsNullOrEmpty(configPath)
+                ? "appsettings.json"
+                : Path.Combine(configPath, "appsettings.json");
+
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory)!.FullName)
+                .AddJsonFile(configFile, optional: false)
+                .Build();
+        }
     }
 
 }

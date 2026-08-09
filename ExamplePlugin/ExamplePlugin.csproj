@@ -8,16 +8,19 @@
       </PropertyGroup>
 
       <ItemGroup>
-        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.1.0" />
-        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="3.0.1.9-beta" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Data" Version="3.3.0" />
+        <PackageReference Include="CloudTheWolf.DSharpPlus.Scaffolding.Shared" Version="4.0.0-beta" />
       </ItemGroup>
 
       <ItemGroup>
         <Folder Include="Classes\" />
+        <None Update="README.md">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
       </ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<OutputPath>C:\bot\5.0.0\Plugins\ExamplePlugin</OutputPath>
+		<OutputPath>C:\bot\5.3.0\Plugins\ExamplePlugin</OutputPath>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 	</PropertyGroup>
 </Project>

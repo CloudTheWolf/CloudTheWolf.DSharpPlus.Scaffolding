@@ -7,12 +7,12 @@
         {
             try
             {
-                _ = sender.ReconnectAsync();
+                await sender.ReconnectAsync();
 
             }
             catch (Exception ex)
             {
-                Logger.Log.LogError($"Something Went wrong and we could not reconnect: \n {ex.Message}");
+                Logger.Log.LogError(ex, "Discord client reconnection failed");
                 Environment.Exit(500);
             }
         }

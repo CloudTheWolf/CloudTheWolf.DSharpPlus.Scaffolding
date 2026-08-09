@@ -14,12 +14,18 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// <summary>
         /// List of plugin loaders
         /// </summary>
-        public List<PluginLoader> Loaders = new();
+        private readonly List<PluginLoader> _loaders = [];
+
+        /// <summary>Plugin assembly loaders owned by this service.</summary>
+        public IReadOnlyList<PluginLoader> Loaders => _loaders;
 
         /// <summary>
         /// List of loaded plugins
         /// </summary>
-        public List<IPlugin> Plugins = new();
+        private readonly List<IPlugin> _plugins = [];
+
+        /// <summary>Successfully loaded plugin instances.</summary>
+        public IReadOnlyList<IPlugin> Plugins => _plugins;
 
 
         /// <summary>
@@ -27,6 +33,11 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
         /// </summary>
         public void LoadPlugins()
         {
+            if (_loaders.Count > 0)
+            {
+                throw new InvalidOperationException("Plugins have already been loaded.");
+            }
+
             if (!Directory.Exists(Constants.PluginsFolder)) return;
             var pluginPath = Directory.GetDirectories(Constants.PluginsFolder);
             foreach (var dir in pluginPath)
@@ -38,12 +49,14 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 {
                     var loader = PluginLoader.CreateFromAssemblyFile(
                         pluginDll,
-                        sharedTypes: [typeof(IPlugin)]);
-                    Loaders.Add(loader);
+                        isUnloadable: true,
+                        sharedTypes: [typeof(IPlugin)],
+                        configure: config => config.LoadInMemory = true);
+                    _loaders.Add(loader);
                 }
             }
 
-            foreach (var loader in Loaders)
+            foreach (var loader in _loaders)
             {
                 foreach (var pluginType in loader
                     .LoadDefaultAssembly()
@@ -52,17 +65,45 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker.Services
                 {
                     try
                     {
-                        var plugin = Activator.CreateInstance(pluginType) as IPlugin;
-                        Plugins.Add(plugin);
-                        Logger.Log.LogInformation($"Loaded plugin: {plugin?.Name}");
+                        var plugin = (IPlugin)Activator.CreateInstance(pluginType)!;
+                        if (_plugins.Any(existing =>
+                                string.Equals(existing.Id, plugin.Id, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            throw new InvalidOperationException(
+                                $"A plugin with the ID '{plugin.Id}' is already loaded.");
+                        }
+
+                        _plugins.Add(plugin);
+                        Logger.Log.LogInformation(
+                            "Loaded plugin {PluginName} ({PluginId}) version {PluginVersion}",
+                            plugin.Name, plugin.Id, plugin.PluginVersion);
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.LogError($"Error Loading Plugin... \n {e.Message}");
+                        Logger.Log.LogError(e, "Error loading plugin type {PluginType}", pluginType.FullName);
                         continue;
                     }
                 }
             }
+        }
+
+        /// <summary>Releases all collectible plugin load contexts.</summary>
+        public void UnloadPlugins()
+        {
+            _plugins.Clear();
+            for (var index = _loaders.Count - 1; index >= 0; index--)
+            {
+                try
+                {
+                    _loaders[index].Dispose();
+                }
+                catch (Exception exception)
+                {
+                    Logger.Log.LogError(exception, "Failed to unload plugin assembly context");
+                }
+            }
+
+            _loaders.Clear();
         }
 
     }

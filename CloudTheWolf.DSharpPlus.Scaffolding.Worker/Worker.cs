@@ -8,14 +8,10 @@ namespace CloudTheWolf.DSharpPlus.Scaffolding.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested) 
-            {
-                Logger.Log.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                
-                var bot = new Bot();
-                await bot.RunAsync(stoppingToken, Log.Logger);
-                await Task.Delay(-1, stoppingToken);
-            }
+            Logger.Log.LogInformation("Worker running at {Timestamp}", DateTimeOffset.Now);
+
+            var bot = new Bot();
+            await bot.RunAsync(stoppingToken, Log.Logger).ConfigureAwait(false);
         }
     }
 }

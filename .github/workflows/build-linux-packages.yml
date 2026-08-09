@@ -1,0 +1,154 @@
+name: Build Linux packages
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Package version or release tag
+        required: true
+        type: string
+      ref:
+        description: Git ref to build
+        required: false
+        default: ""
+        type: string
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Package version, for example 5.3.0
+        required: true
+        type: string
+      ref:
+        description: Optional branch, tag, or commit to build
+        required: false
+        default: ""
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: "1"
+  DOTNET_NOLOGO: "1"
+  PROJECT_FILE: CloudTheWolf.DSharpPlus.Scaffolding.Worker/CloudTheWolf.DSharpPlus.Scaffolding.Worker.csproj
+
+jobs:
+  package:
+    name: ${{ matrix.format }} ${{ matrix.package_arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - format: deb
+            rid: linux-x64
+            nfpm_arch: amd64
+            package_arch: amd64
+          - format: deb
+            rid: linux-arm64
+            nfpm_arch: arm64
+            package_arch: arm64
+          - format: rpm
+            rid: linux-x64
+            nfpm_arch: amd64
+            package_arch: x86_64
+          - format: rpm
+            rid: linux-arm64
+            nfpm_arch: arm64
+            package_arch: aarch64
+          - format: apk
+            rid: linux-musl-x64
+            nfpm_arch: amd64
+            package_arch: x86_64
+          - format: apk
+            rid: linux-musl-arm64
+            nfpm_arch: arm64
+            package_arch: aarch64
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Validate package version
+        env:
+          RAW_VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${RAW_VERSION#v}"
+          if [[ ! "$version" =~ ^[0-9]+(\.[0-9]+){1,3}([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid package version: $RAW_VERSION" >&2
+            exit 1
+          fi
+          echo "PACKAGE_VERSION=$version" >> "$GITHUB_ENV"
+          echo "SOURCE_DATE_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_ENV"
+
+      - name: Restore Worker
+        run: dotnet restore "$PROJECT_FILE" --runtime "${{ matrix.rid }}"
+
+      - name: Publish self-contained Worker
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet publish "$PROJECT_FILE" \
+            --configuration Release \
+            --runtime "${{ matrix.rid }}" \
+            --self-contained true \
+            --no-restore \
+            --output artifacts/publish \
+            --property:Version="$PACKAGE_VERSION" \
+            --property:ContinuousIntegrationBuild=true
+          chmod 0755 artifacts/publish/CloudTheWolf.DSharpPlus.Scaffolding.Worker
+
+      - name: Install nFPM
+        env:
+          NFPM_VERSION: 2.47.0
+        shell: bash
+        run: |
+          set -euo pipefail
+          install_dir="$RUNNER_TEMP/nfpm"
+          asset="nfpm_${NFPM_VERSION}_Linux_x86_64.tar.gz"
+          release_url="https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}"
+          mkdir -p "$install_dir"
+          curl --fail --location --silent --show-error \
+            "$release_url/$asset" --output "$install_dir/$asset"
+          curl --fail --location --silent --show-error \
+            "$release_url/checksums.txt" --output "$install_dir/checksums.txt"
+          (
+            cd "$install_dir"
+            awk -v file="$asset" '$2 == file { print; found=1 } END { if (!found) exit 1 }' \
+              checksums.txt | sha256sum --check -
+            tar -xzf "$asset"
+          )
+          echo "NFPM_BIN=$install_dir/nfpm" >> "$GITHUB_ENV"
+
+      - name: Build ${{ matrix.format }} package
+        env:
+          NFPM_ARCH: ${{ matrix.nfpm_arch }}
+          PACKAGE_FORMAT: ${{ matrix.format }}
+          PACKAGE_ARCH: ${{ matrix.package_arch }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/packages
+          package="cloudthewolf-dsharpplus-scaffolding_${PACKAGE_VERSION}_${PACKAGE_ARCH}.${PACKAGE_FORMAT}"
+          "$NFPM_BIN" package \
+            --config packaging/nfpm.yaml \
+            --packager "$PACKAGE_FORMAT" \
+            --target "artifacts/packages/$package"
+          test -s "artifacts/packages/$package"
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-package-${{ matrix.format }}-${{ matrix.package_arch }}
+          path: artifacts/packages/*
+          if-no-files-found: error
+          retention-days: 14
