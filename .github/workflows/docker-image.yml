@@ -21,9 +21,9 @@ jobs:
         id: version
         shell: bash
         run: |
-          PATCH=$((GITHUB_RUN_NUMBER + 3))
-          echo "version=5.0.${PATCH}" >> "$GITHUB_OUTPUT"
-          echo "Building version 5.0.${PATCH}"
+          PATCH=$((GITHUB_RUN_NUMBER))
+          echo "version=5.3.${PATCH}" >> "$GITHUB_OUTPUT"
+          echo "Building version 5.3.${PATCH}"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
