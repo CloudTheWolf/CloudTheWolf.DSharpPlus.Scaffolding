@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS base
+FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
 WORKDIR /app
 
 # The Worker transitively requires Microsoft.AspNetCore.App, while retaining the
@@ -8,7 +8,7 @@ COPY --from=mcr.microsoft.com/dotnet/aspnet:10.0 \
     /usr/share/dotnet/shared/Microsoft.AspNetCore.App
 
 # Install runtime dependencies
-RUN apt-get update && \
+RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         libgdiplus \
         fonts-freefont-ttf \
