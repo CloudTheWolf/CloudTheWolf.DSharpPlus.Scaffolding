@@ -23,6 +23,8 @@ RUN apt-get update && \
         libfreetype6-dev \
         libpng-dev \
         imagemagick \
+    && fc-cache --force \
+    && fc-match FreeSans \
     && rm -rf /var/lib/apt/lists/*
 
 # Build stage
@@ -48,5 +50,6 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 ENV FONTCONFIG_PATH=/etc/fonts
+ENV HOYOSIM_FONT_FAMILY=FreeSans
 
 ENTRYPOINT ["dotnet", "CloudTheWolf.DSharpPlus.Scaffolding.Worker.dll"]
