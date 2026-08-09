@@ -52,7 +52,9 @@
     <Folder Include="SystemCommands\" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\&quot; /E /Y" />
-  </Target>
+	<Target Name="PostBuild"
+		  AfterTargets="PostBuildEvent"
+		  Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<Exec Command="xcopy &quot;$(TargetDir)*.*&quot; &quot;C:\bot\5.0.0\&quot; /E /Y" />
+	</Target>
 </Project>
