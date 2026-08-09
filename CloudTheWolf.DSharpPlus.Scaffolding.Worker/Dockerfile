@@ -1,5 +1,11 @@
-FROM mcr.microsoft.com/dotnet/runtime:10.0 AS base
+FROM mcr.microsoft.com/dotnet/runtime:10.0-noble-chiseled AS base
 WORKDIR /app
+
+# The Worker transitively requires Microsoft.AspNetCore.App, while retaining the
+# smaller general-purpose .NET runtime image as its base.
+COPY --from=mcr.microsoft.com/dotnet/aspnet:10.0 \
+    /usr/share/dotnet/shared/Microsoft.AspNetCore.App \
+    /usr/share/dotnet/shared/Microsoft.AspNetCore.App
 
 # Install runtime dependencies
 RUN apt-get update && \
